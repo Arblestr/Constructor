@@ -9,7 +9,7 @@ public:
 	Inter(HWND hWnd, HINSTANCE hInst);
 	~Inter();
 protected:
-	static HWND hwnd;
+	static HWND hWnd;
 	static HINSTANCE hInst;
 };
 

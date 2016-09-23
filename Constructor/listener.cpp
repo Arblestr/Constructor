@@ -4,7 +4,6 @@
 
 // √лобальные переменные:
 extern HINSTANCE hInst;                                // текущий экземпл€р
-extern HWND hWnd;
 
 //
 //  ‘”Ќ ÷»я: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -23,7 +22,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 	{
 		Inter MainInter(hWnd, hInst);
-		Button ButRotateX(TEXT("RotateX"), 500, 500, 50, 100, Id_ButRotateX);
+		Button ButRotateX(TEXT("RotateX"), 10, 10, 50, 100, Id_ButRotateX);
 	}
 	case WM_COMMAND:
 	{
