@@ -32,6 +32,7 @@ public:
 	node Center;
 
 	vector<node> Nodes;
+	vector<node> NewNodes;
 	vector<polygon> Polygons;
 
 	void LoadFromFile(char* FileName);

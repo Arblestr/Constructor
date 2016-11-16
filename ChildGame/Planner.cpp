@@ -80,6 +80,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_COMMAND:
+	case WM_KEYDOWN:
 	{
 		//SetFocus(hWnd);
 		int wmId = LOWORD(wParam);
@@ -190,6 +191,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			MyModel.LoadFromFile("cube.txt");
 			MyScene.AddModel(MyModel);
+			MyScene.DrawScene();
+		}
+		break;
+		case VK_UP:
+		{
+			//MyModel.LoadFromFile("cube.txt");
+			//MyScene.AddModel(MyModel);
+			MyScene.cam->rotateHorizontalSphere(20*M_PI/180);
 			MyScene.DrawScene();
 		}
 		break;

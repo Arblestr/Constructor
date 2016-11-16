@@ -139,6 +139,11 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 
 		throw AllocationMemoryError();
 	}*/
+
+	GVector position(0, 0, 500, 1);
+	GVector target(0, 0, 0, 1);
+
+	this->cam = new Camera(position, target);
 }
 
 Scene::~Scene()
@@ -179,19 +184,21 @@ void Scene::InitBitmap()
 
 void Scene::DrawScene()
 {
+	this->toCam();
 	for (int i = 0; i < this->width; i++)
 		for (int j = 0; j < this->height; j++)
 			this->pixels[j*this->width + i] = 0xffff00;
 
 	for (int i = 0; i < MyModels.size(); i++)
 	{
-		this->MyModels[i].PaintModel(this->pixels);
+		//this->MyModels[i].PaintModel(this->pixels);
 		this->MyModels[i].FillModel(this->pixels);
 	}
 	
 
 	//Brick* brick = bricks->objects[0]; // temporary
 	//this->render->run(brick, this->cam);
+	
 
 	SelectObject(this->hdcMem, this->sBmp);
 	BitBlt(this->hdc, X, Y, this->width, this->height, this->hdcMem, 0, 0, SRCCOPY);
@@ -199,7 +206,7 @@ void Scene::DrawScene()
 
 void Scene::AddModel(Model MyModel)
 {
-	for (int i = 0; i < MyModel.NodesNum; i++)
+	/*for (int i = 0; i < MyModel.NodesNum; i++)
 	{
 		MyModel.Nodes[i].X = MyModel.Nodes[i].X * 100 + this->width / 2 - MyModel.Center.X * 100;
 		MyModel.Nodes[i].Y = MyModel.Nodes[i].Y * 100 + this->height / 2 - MyModel.Center.Y * 100;
@@ -208,7 +215,35 @@ void Scene::AddModel(Model MyModel)
 
 	MyModel.Center.X = this->width / 2;
 	MyModel.Center.Y = this->height / 2;
-	MyModel.Center.Z = 0;
+	MyModel.Center.Z = 0;*/
+
+	//Brick* nbrick = new Brick(brick);
+
+//#pragma omp parallel for
+	for (int vertexIndex = 0; vertexIndex < MyModel.NodesNum; vertexIndex++)
+	{
+		node v;
+		v.X = MyModel.Nodes[vertexIndex].X;
+		v.Y = MyModel.Nodes[vertexIndex].Y;
+		v.Z = MyModel.Nodes[vertexIndex].Z;
+
+		int nX = v.X + 1. - MyModel.Center.X;
+		int nY = v.Y + 1. - MyModel.Center.Y;
+		int nZ = v.Z + 1. - MyModel.Center.Z;
+
+		MyModel.Nodes[vertexIndex].X = nX;
+		MyModel.Nodes[vertexIndex].Y = nY;
+		MyModel.Nodes[vertexIndex].Z = nZ;
+	}
+
+	node center;
+	center.X = 0;
+	center.Y = 0;
+	center.Z = 0;
+
+	MyModel.Center.X = center.X;
+	MyModel.Center.Y = center.Y;
+	MyModel.Center.Z = center.Z;
 
 	this->MyModels.push_back(MyModel);
 }
@@ -222,3 +257,51 @@ void Scene::Clear()
 {
 	return this->bricks;
 }*/
+
+
+void Scene::toCam()
+{
+	int xCenter = this->width / 2;
+	int yCenter = this->height / 2;
+
+	GMatrix view = this->cam->cameraview();
+
+	for (int Index = 0; Index < this->MyModels.size(); Index++)
+	{
+		Model* MyModel = &this->MyModels[Index];
+
+		for (int vertexIndex = 0; vertexIndex < MyModel->NodesNum; vertexIndex++)
+		{
+			//MyModel->Nodes[vertexIndex];
+			GVector NodVec(MyModel->Nodes[vertexIndex].X, MyModel->Nodes[vertexIndex].Y, MyModel->Nodes[vertexIndex].Z, 1);
+			GVector result;
+			for (unsigned long i = 0; i <= 3; i++)
+			{
+				for (unsigned long j = 0; j <= 3; j++)
+				{
+					result[i] = result[i] + view[j][i] * NodVec[j];
+				}
+			}
+			MyModel->NewNodes[vertexIndex].X = result[0] + xCenter;
+			MyModel->NewNodes[vertexIndex].Y = result[1] + yCenter;
+			MyModel->NewNodes[vertexIndex].Z = result[2];
+			//tmpVertex = tmpVertex * view;
+			//tmpVertex.X = tmpVertex.X + xCenter;
+			//tmpVertex.Y = tmpVertex.Y + yCenter;
+
+			//MyModel->Nodes[vertexIndex] = tmpVertex;
+		}
+
+		/*for (int faceIndex = 0; faceIndex < MyModel->facesCount(); faceIndex++)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				GVector tmpN = nbrick->VNormal[faceIndex][i];
+				//tmpN = tmpN * view;
+				nbrick->sVNormal[faceIndex][i] = tmpN;
+			}
+		}*/
+	}
+
+}
+

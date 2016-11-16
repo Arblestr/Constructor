@@ -1,5 +1,6 @@
 #pragma once
 #include "Model.h"
+#include "Camera.h"
 using namespace std;
 
 class Inter
@@ -53,6 +54,7 @@ public:
 	void AddModel(Model MyModel);
 
 	vector<Model> MyModels;
+	Camera* cam;
 private:
 	void InitBitmap();
 
@@ -68,6 +70,7 @@ private:
 	HDC hdc;
 	HDC hdcMem;
 	HWND hWnd;
+	void toCam();
 	/*
 	Camera* cam;
 	Render* render;

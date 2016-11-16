@@ -139,7 +139,11 @@ void Model::ReadNodes()
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		fscanf_s(this->F, "%f %f %f", &(BufNode.X), &(BufNode.Y), &(BufNode.Z));
+		BufNode.X = BufNode.X*20;
+		BufNode.Y = BufNode.Y*20;
+		BufNode.Z = BufNode.Z*20;
 		this->Nodes.push_back(BufNode);
+		this->NewNodes.push_back(BufNode);
 	}
 
 	fscanf_s(this->F, "%d", &(this->PolygonNum));
@@ -176,9 +180,9 @@ void Model::FillModel(unsigned long* pixels)
 {
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
-		node A = this->Nodes[this->Polygons[i].A];
-	    node B = this->Nodes[this->Polygons[i].B];
-		node C = this->Nodes[this->Polygons[i].C];
+		node A = this->NewNodes[this->Polygons[i].A];
+	    node B = this->NewNodes[this->Polygons[i].B];
+		node C = this->NewNodes[this->Polygons[i].C];
 
 		fillFaces(A, B, C, pixels, 500);
 	}

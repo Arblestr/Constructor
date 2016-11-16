@@ -145,8 +145,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="ChildGame.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="MatrixVector.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Planner.h" />
     <ClInclude Include="Resource.h" />
@@ -154,8 +156,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChildGame.cpp" />
     <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="MatrixVector.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Planner.cpp" />
     <ClCompile Include="stdafx.cpp">
