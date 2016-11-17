@@ -18,7 +18,7 @@
 extern HINSTANCE hInst;
 Model MyModel;
 float DeltaMove = 5;
-float DeltaRotate = 10;
+float DeltaRotate = 90;
 int ModelNum = 0;
 
 
@@ -76,6 +76,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Button ButLoad(TEXT("Load"), 840, 500, 25, 80, ID_BLoad);
 
 		Button ButCube(TEXT("Cube"), 200, 505, 25, 80, ID_BCube);
+		Button ButZigZag(TEXT("Zigzag"), 280, 505, 25, 80, ID_BZigZag);
 
 		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 100, 25, 105, ID_BCamRotHorL);
 		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 100, 25, 105, ID_BCamRotHorR);
@@ -195,7 +196,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_BCube:
 		{
-			MyModel.LoadFromFile("cube.txt");
+			MyModel.LoadFromFile("Cube.txt");
+			MyScene.AddModel(MyModel);
+			MyScene.DrawScene();
+		}
+		break;
+		case ID_BZigZag:
+		{
+			MyModel.LoadFromFile("zigzag.txt");
 			MyScene.AddModel(MyModel);
 			MyScene.DrawScene();
 		}
