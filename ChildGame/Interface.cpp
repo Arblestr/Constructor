@@ -275,9 +275,9 @@ void Scene::toCam()
 			//MyModel->Nodes[vertexIndex];
 			GVector NodVec(MyModel->Nodes[vertexIndex].X, MyModel->Nodes[vertexIndex].Y, MyModel->Nodes[vertexIndex].Z, 1);
 			GVector result;
-			for (unsigned long i = 0; i <= 3; i++)
+			for (int i = 0; i <= 3; i++)
 			{
-				for (unsigned long j = 0; j <= 3; j++)
+				for (int j = 0; j <= 3; j++)
 				{
 					result[i] = result[i] + view[j][i] * NodVec[j];
 				}
