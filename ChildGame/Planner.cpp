@@ -76,10 +76,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Button ButLoad(TEXT("Load"), 840, 500, 25, 80, ID_BLoad);
 
 		Button ButCube(TEXT("Cube"), 200, 505, 25, 80, ID_BCube);
+
+		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 100, 25, 105, ID_BCamRotHorL);
+		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 100, 25, 105, ID_BCamRotHorR);
+		Button ButCamRotateVerU(TEXT("Rotate Up"), 705, 150, 25, 105, ID_BCamRotVerU);
+		Button ButCamRotateVerD(TEXT("Rotate Down"), 820, 150, 25, 105, ID_BCamRotVerD);
+
 		
 	}
 	break;
-	case WM_KEYDOWN:
+	//case WM_KEYDOWN:
 	case WM_COMMAND:
 	{
 		//SetFocus(hWnd);
@@ -194,15 +200,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			MyScene.DrawScene();
 		}
 		break;
-		case 0x57:
+		case ID_BCamRotHorL:
+		{	
+			MyScene.cam->rotateHorizontalSphere(-20*M_PI/180);
+			MyScene.DrawScene();
+		}
+		break;
+		case ID_BCamRotHorR:
 		{
-			//MyModel.LoadFromFile("cube.txt");
-			//MyScene.AddModel(MyModel);
-			//MyScene.cam->rotateVerticalSphere(20*M_PI/180);
+			MyScene.cam->rotateHorizontalSphere(20 * M_PI / 180);
+			MyScene.DrawScene();
+		}
+		break;
+		case ID_BCamRotVerU:
+		{
 			MyScene.cam->rotateVerticalSphere(20 * M_PI / 180);
 			MyScene.DrawScene();
 		}
 		break;
+		case ID_BCamRotVerD:
+		{
+			MyScene.cam->rotateVerticalSphere(-20 * M_PI / 180);
+			MyScene.DrawScene();
+		}
+		break;
+
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}

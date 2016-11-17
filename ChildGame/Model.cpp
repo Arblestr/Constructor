@@ -139,9 +139,9 @@ void Model::ReadNodes()
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		fscanf_s(this->F, "%f %f %f", &(BufNode.X), &(BufNode.Y), &(BufNode.Z));
-		BufNode.X = BufNode.X*20;
-		BufNode.Y = BufNode.Y*20;
-		BufNode.Z = BufNode.Z*20;
+		BufNode.X = BufNode.X*40;
+		BufNode.Y = BufNode.Y*40;
+		BufNode.Z = BufNode.Z*40;
 		this->Nodes.push_back(BufNode);
 		this->NewNodes.push_back(BufNode);
 	}

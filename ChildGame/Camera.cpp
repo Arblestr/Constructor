@@ -112,7 +112,7 @@ Camera::Camera(GVector position, GVector target)
 	this->direction[3] = 1;
 }
 
-void Camera::rotateHorizontalSphere(double angle)
+void Camera::rotateVerticalSphere(double angle)
 {
 	GMatrix rotation = matrixrotation(this->right[0], this->right[1], this->right[2], angle);
 	this->up = this->up * rotation;
@@ -121,7 +121,7 @@ void Camera::rotateHorizontalSphere(double angle)
 	this->position = this->position * (-movement) * rotation * movement;
 }
 
-void Camera::rotateVerticalSphere(double angle)
+void Camera::rotateHorizontalSphere(double angle)
 {
 	GMatrix rotation = matrixrotation(this->up[0], this->up[1], this->up[2], angle);
 	this->right = this->right * rotation;
