@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include <vector>
+#include "MatrixVector.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ typedef struct polygon
 	int A;
 	int B;
 	int C;
+	int N;
 };
 
 class Model 
@@ -34,15 +36,17 @@ public:
 	vector<node> Nodes;
 	vector<node> NewNodes;
 	vector<polygon> Polygons;
+	vector<GVector> Normals;
 
 	void LoadFromFile(char* FileName);
 	void PaintModel(unsigned long* pixels);
-	void FillModel(unsigned long* pixels);
+	void FillModel(unsigned long* pixels, int width, int height, int* zbuffer, node PointOfLight);
 	void MoveX(float DeltaMove);
 	void MoveY(float DeltaMove);
 	void MoveZ(float DeltaMove);
 	void RotateX(float DeltaRotate);
 	void RotateY(float DeltaRotate);
 	void RotateZ(float DeltaRotate);
+	void ClearModel();
 };
 

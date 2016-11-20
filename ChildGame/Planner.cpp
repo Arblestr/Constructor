@@ -17,8 +17,9 @@
 
 extern HINSTANCE hInst;
 Model MyModel;
-float DeltaMove = 5;
-float DeltaRotate = 90;
+Model MyModel2;
+float DeltaMove = 30;
+float DeltaRotate = 10;
 int ModelNum = 0;
 
 
@@ -34,12 +35,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Inter MainInter(hWnd, hInst);
 
 		Label LabChoose(TEXT("Object Number"), 10, 20, 25, 115);
-		Edit EdChoose(TEXT(" "), 130, 20, 25, 50, ID_Choose);
+		Edit EdChoose(TEXT(""), 130, 20, 25, 50, ID_Choose);
 
 		Label LabMove(TEXT("Moving"), 55, 60, 25, 80);
 
 		Label LabStep(TEXT("Step"), 10, 100, 25, 80);
-		Edit EdStep(TEXT(" "), 100, 100, 25, 80, ID_Step);
+		Edit EdStep(TEXT(""), 100, 100, 25, 80, ID_Step);
 
 		Button ButMoveXp(TEXT("Move OX+"), 10, 140, 25, 80, ID_BMXp);
 		Button ButMoveXm(TEXT("Move OX-"), 100, 140, 25, 80, ID_BMXm);
@@ -53,12 +54,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Label LabScale(TEXT("Scaling"), 55, 260, 25, 80);
 
 		Label LabCoefficient(TEXT("Coefficient"), 10, 300, 25, 80);
-		Edit EdCoefficient(TEXT(" "), 100, 300, 25, 80, ID_Coeff);
+		Edit EdCoefficient(TEXT(""), 100, 300, 25, 80, ID_Coeff);
 
 		Label LabRotate(TEXT("Rotation"), 55, 340, 25, 80);
 
 		Label LabAngle(TEXT("Angle"), 10, 380, 25, 80);
-		Edit EdAngle(TEXT(" "), 100, 380, 25, 80, ID_Angle);
+		Edit EdAngle(TEXT(""), 100, 380, 25, 80, ID_Angle);
 
 		Button ButRotateXp(TEXT("Rotate OX+"), 10, 420, 25, 80, ID_BRXp);
 		Button ButRotateXm(TEXT("Rotate OX-"), 100, 420, 25, 80, ID_BRXm);
@@ -77,6 +78,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Button ButCube(TEXT("Cube"), 200, 505, 25, 80, ID_BCube);
 		Button ButZigZag(TEXT("Zigzag"), 280, 505, 25, 80, ID_BZigZag);
+		Button ButLine(TEXT("line"), 360, 505, 25, 80, ID_BLine);
+		Button Buttblock(TEXT("T-Block"), 440, 505, 25, 80, ID_Btblock);
 
 		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 100, 25, 105, ID_BCamRotHorL);
 		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 100, 25, 105, ID_BCamRotHorR);
@@ -191,7 +194,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (wcslen(Buf) == 0)
 					ModelNum = 0;
 				else
-				    ModelNum = _wtoi(Buf);
+				    ModelNum = _wtoi(Buf)-1;
 			}
 			break;
 		case ID_BCube:
@@ -199,6 +202,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			MyModel.LoadFromFile("Cube.txt");
 			MyScene.AddModel(MyModel);
 			MyScene.DrawScene();
+			MyModel.ClearModel();
 		}
 		break;
 		case ID_BZigZag:
@@ -206,29 +210,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			MyModel.LoadFromFile("zigzag.txt");
 			MyScene.AddModel(MyModel);
 			MyScene.DrawScene();
+			MyModel.ClearModel();
+		}
+		break;
+		case ID_BLine:
+		{
+			MyModel.LoadFromFile("line.txt");
+			MyScene.AddModel(MyModel);
+			MyScene.DrawScene();
+			MyModel.ClearModel();
+		}
+		break;
+		case ID_Btblock:
+		{
+			MyModel.LoadFromFile("tblock.txt");
+			MyScene.AddModel(MyModel);
+			MyScene.DrawScene();
+			MyModel.ClearModel();
 		}
 		break;
 		case ID_BCamRotHorL:
 		{	
-			MyScene.cam->rotateHorizontalSphere(-20*M_PI/180);
+			MyScene.cam->rotateHorizontalSphere(-10*M_PI/180);
 			MyScene.DrawScene();
 		}
 		break;
 		case ID_BCamRotHorR:
 		{
-			MyScene.cam->rotateHorizontalSphere(20 * M_PI / 180);
+			MyScene.cam->rotateHorizontalSphere(10 * M_PI / 180);
 			MyScene.DrawScene();
 		}
 		break;
 		case ID_BCamRotVerU:
 		{
-			MyScene.cam->rotateVerticalSphere(20 * M_PI / 180);
+			MyScene.cam->rotateVerticalSphere(10 * M_PI / 180);
 			MyScene.DrawScene();
 		}
 		break;
 		case ID_BCamRotVerD:
 		{
-			MyScene.cam->rotateVerticalSphere(-20 * M_PI / 180);
+			MyScene.cam->rotateVerticalSphere(-10 * M_PI / 180);
 			MyScene.DrawScene();
 		}
 		break;

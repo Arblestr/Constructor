@@ -45,11 +45,13 @@
 
 #define ID_BCube 3475
 #define ID_BZigZag 3476
+#define ID_BLine 3477
+#define ID_Btblock 3478
 
-#define ID_BCamRotHorL 3477
-#define ID_BCamRotHorR 3478
-#define ID_BCamRotVerU 3479
-#define ID_BCamRotVerD 34710
+#define ID_BCamRotHorL 3479
+#define ID_BCamRotHorR 3480
+#define ID_BCamRotVerU 3481
+#define ID_BCamRotVerD 3482
 
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы

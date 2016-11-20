@@ -55,6 +55,7 @@ public:
 
 	vector<Model> MyModels;
 	Camera* cam;
+	node PointOfLight;
 private:
 	void InitBitmap();
 
@@ -64,6 +65,7 @@ private:
 	int height;
 
 	unsigned long* pixels;
+	int* zbuffer;
 
 	BITMAPINFO sBmInfo;
 	HBITMAP sBmp;
@@ -71,9 +73,5 @@ private:
 	HDC hdcMem;
 	HWND hWnd;
 	void toCam();
-	/*
-	Camera* cam;
-	Render* render;
-	*/
 
 };

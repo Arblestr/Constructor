@@ -1,6 +1,23 @@
 #include "stdafx.h"
 #include "math.h"
 #include "Model.h"
+#include <algorithm>
+
+
+double intencity(double X, double Y, double Z, GVector N, node light)
+{
+	GVector D(light.X - X, light.Y - Y, light.Z + Z, 1);
+	//D * (-1);
+	D.normalize();
+	N.normalize();
+	double I;
+	double Iconst = 0.4;
+	double gg = GVector::scalar(N, D);
+	double Idiff = 0.4 * max(0, gg);
+	double Iblinn = 0;
+	I = Iconst + Idiff + Iblinn;
+	return I;
+}
 
 /////////////
 void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
@@ -40,33 +57,27 @@ void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 	}
 }
 ////////////////
-void fillFaces(node A, node B, node C, unsigned long* pixels, int width)
+void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, int* zbuffer,
+	           GVector normA, GVector normB, GVector normC, node light)
 {
 	if (A.Y == B.Y && A.Y == C.Y) return;
 
-	if (A.Y > B.Y) swap(A, B);
-	if (A.Y > C.Y) swap(A, C);
-	if (B.Y > C.Y) swap(B, C);
+	if (A.Y > B.Y) { std::swap(A, B); std::swap(normA, normB); }
+	if (A.Y > C.Y) { std::swap(A, C); std::swap(normA, normC); }
+	if (B.Y > C.Y) { std::swap(B, C); std::swap(normB, normC); }
 
-	int aY = A.Y;
-	int bY = B.Y;
-	int cY = C.Y;
-	int aX = A.X;
-	int bX = B.X;
-	int cX = C.X;
-
-	int faceHeight = cY - aY;
-	int halfHeight = bY - aY;
+	int faceHeight = (int)C.Y - (int)A.Y;
+	int halfHeight = (int)B.Y - (int)A.Y;
 
 	for (int yCoord = 0; yCoord < faceHeight; yCoord++) {
-		bool secondPart = yCoord > bY - aY || bY == aY;
+		bool secondPart = yCoord >(int)B.Y - (int)A.Y || (int)B.Y == (int)A.Y;
 
 		float ak = (float)yCoord / faceHeight;
 		float bk;
 		if (secondPart)
 		{
-			halfHeight = cY - bY;
-			bk = (float)(yCoord - (bY - aY)) / halfHeight;
+			halfHeight = (int)C.Y - (int)B.Y;
+			bk = (float)(yCoord - ((int)B.Y - (int)A.Y)) / halfHeight;
 		}
 		else
 		{
@@ -74,35 +85,70 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width)
 		}
 
 		node na;
-		na.X = (aX + (cX - aX) * ak);
-		na.Y = (aY + (cY - aY) * ak);
-		na.Z = 0;
+		na.X = (int)A.X + ((int)C.X - (int)A.X) * ak;
+		na.Y = (int)A.Y + ((int)C.Y - (int)A.Y) * ak;
+		na.Z = (int)A.Z + ((int)C.Z - (int)A.Z) * ak;
+		GVector nNormA(normA + (normC - normA) * ak);
+
 		node nb;
+		GVector nNormB;
 		if (secondPart)
 		{
-			nb.X = (bX + (cX - bX) * bk);
-			nb.Y = (bY + (cY - bY) * bk);
+			nb.X = (int)B.X + ((int)C.X - (int)B.X) * bk;
+			nb.Y = (int)B.Y + ((int)C.Y - (int)B.Y) * bk;
+			nb.Z = (int)B.Z + ((int)C.Z - (int)B.Z) * bk;
+
+			nNormB = normB + (normC - normB) * bk;
 		}
 		else
 		{
-			nb.X = (aX + (bX - aX) * bk);
-			nb.Y = (aY + (bY - aY) * bk);
+			nb.X = (int)A.X + ((int)B.X - (int)A.X) * bk;
+			nb.Y = (int)A.Y + ((int)B.Y - (int)A.Y) * bk;
+			nb.Z = (int)A.Z + ((int)B.Z - (int)A.Z) * bk;
+
+			nNormB = normA + (normB - normA) * bk;
 		}
 
-		if (na.X > nb.X)
+		if ((int)na.X > (int)nb.X)
 		{
-			swap(na, nb);
+			std::swap(na, nb);
+			std::swap(nNormA, nNormB);
 		}
 
-		for (int xCoord = na.X; xCoord <= nb.X; xCoord++)
+		for (int xCoord = (int)na.X; xCoord <= (int)nb.X; xCoord++)
 		{
-			pixels[(int)(A.Y + yCoord)*width + xCoord] = 0x00006700;
+
+			double phi = 1.;
+			if ((int)nb.X != (int)na.X)
+			{
+				phi = (double)(xCoord - (int)na.X) / (double)((int)nb.X - (int)na.X);
+			}
+			//double AG = normA.length();
+			node P;
+			P.X = (int)na.X + ((int)nb.X - (int)na.X) * phi;
+			P.Y = (int)na.Y + ((int)nb.Y - (int)na.Y) * phi;
+			P.Z = (int)na.Z + ((int)nb.Z - (int)na.Z) * phi;
+			GVector normP(nNormA + (nNormB - nNormA) * phi);
+
+			int pix = ((int)A.Y + yCoord) * width + xCoord;
+			if (pix >= 0 && pix <= width * height)
+			{
+				if (zbuffer[(int)P.X + (int)P.Y * width] <= P.Z)
+				{
+					zbuffer[(int)P.X + (int)P.Y * width] = P.Z;
+					double I = intencity(P.X, P.Y, P.Z, normP, light);
+					pixels[pix] =  RGB(GetRValue(0x00ff00) * I, GetGValue(0x00ff00) * I, GetBValue(0x00ff00) * I);
+				}
+			}
 		}
 
 	}
 
 }
 ////////////////
+
+
+/////////////////
 
 Model::Model()
 {
@@ -135,6 +181,8 @@ void Model::ReadNodes()
 {
 	node BufNode;
 	polygon BufPolygon;
+	GVector BufNormal;
+	//BufNormal[3] = 1;
 	fscanf_s(this->F, "%d", &(this->NodesNum));
 	for (int i = 0; i < this->NodesNum; i++)
 	{
@@ -149,8 +197,13 @@ void Model::ReadNodes()
 	fscanf_s(this->F, "%d", &(this->PolygonNum));
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
-		fscanf_s(this->F, "%d %d %d", &(BufPolygon.A), &(BufPolygon.B), &(BufPolygon.C));
+		fscanf_s(this->F, "%d %d %d %d", &(BufPolygon.A), &(BufPolygon.B), &(BufPolygon.C), &(BufPolygon.N));
 		this->Polygons.push_back(BufPolygon);
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		fscanf_s(this->F, "%d %d %d", &(BufNormal[0]), &(BufNormal[1]), &(BufNormal[2]));
+		this->Normals.push_back(BufNormal);
 	}
 	fscanf_s(this->F, "%f %f %f", &(this->Center.X), &(this->Center.Y), &(this->Center.Z));
 
@@ -160,14 +213,14 @@ void Model::PaintModel(unsigned long* pixels)
 {	
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
-		int x1 = this->Nodes[this->Polygons[i].A].X;
-		int y1 = this->Nodes[this->Polygons[i].A].Y;
+		int x1 = this->NewNodes[this->Polygons[i].A].X;
+		int y1 = this->NewNodes[this->Polygons[i].A].Y;
 
-		int x2 = this->Nodes[this->Polygons[i].B].X;
-		int y2 = this->Nodes[this->Polygons[i].B].Y;
+		int x2 = this->NewNodes[this->Polygons[i].B].X;
+		int y2 = this->NewNodes[this->Polygons[i].B].Y;
 
-		int x3 = this->Nodes[this->Polygons[i].C].X;
-		int y3 = this->Nodes[this->Polygons[i].C].Y;
+		int x3 = this->NewNodes[this->Polygons[i].C].X;
+		int y3 = this->NewNodes[this->Polygons[i].C].Y;
 
 		line(x1, y1, x2, y2, pixels, 500);
 		line(x2, y2, x3, y3, pixels, 500);
@@ -176,15 +229,22 @@ void Model::PaintModel(unsigned long* pixels)
 	}
 }
 
-void Model::FillModel(unsigned long* pixels)
+void Model::FillModel(unsigned long* pixels, int width, int height, int* zbuffer, node PointOfLight)
 {
+	node A;
+	node B;
+	node C;
+	GVector N;
+
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
-		node A = this->NewNodes[this->Polygons[i].A];
-	    node B = this->NewNodes[this->Polygons[i].B];
-		node C = this->NewNodes[this->Polygons[i].C];
-
-		fillFaces(A, B, C, pixels, 500);
+		A = this->NewNodes[this->Polygons[i].A];
+	    B = this->NewNodes[this->Polygons[i].B];
+		C = this->NewNodes[this->Polygons[i].C];
+		N = this->Normals[this->Polygons[i].N];
+		//int kk = this->Polygons[i].N;
+		//double AG = N.length();
+		fillFaces(A, B, C, pixels, width, height, zbuffer, N,N,N, PointOfLight);
 	}
 }
 
@@ -253,6 +313,16 @@ void Model::RotateZ(float DeltaRotate)
 		this->Nodes[i].X = NewX;
 		this->Nodes[i].Y = NewY;
 	}
+}
+
+void Model::ClearModel()
+{
+	this->NewNodes.clear();
+	this->Nodes.clear();
+	this->Polygons.clear();
+	this->PolygonNum = 0;
+	this->NodesNum = 0;
+	this->Normals.clear();
 }
 
 

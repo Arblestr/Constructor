@@ -100,62 +100,41 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 	//this->model = model;
 
 	this->pixels = new unsigned long[this->width * this->height];
-	if (!this->pixels)
-	{
-		//throw AllocationMemoryError();
-	}
 
 	this->InitBitmap();
-
-	/*this->bricks = new Composite;
-	if (!this->bricks)
-	{
-		delete this->pixels;
-		this->pixels = nullptr;
-
-		throw AllocationMemoryError();
-	}
-
-	this->render = new Render(pixels, this->height, this->width);
-	if (!this->render)
-	{
-		delete this->pixels;
-		delete this->bricks;
-		this->pixels = nullptr;
-		this->bricks = nullptr;
-
-		throw AllocationMemoryError();
-	}
-
-	this->cam = new Camera;
-	if (!this->cam)
-	{
-		delete this->pixels;
-		delete this->bricks;
-		delete this->render;
-		this->pixels = nullptr;
-		this->bricks = nullptr;
-		this->render = nullptr;
-
-		throw AllocationMemoryError();
-	}*/
 
 	GVector position(0, 0, 500, 1);
 	GVector target(0, 0, 0, 1);
 
 	this->cam = new Camera(position, target);
+
+	this->PointOfLight.Z = 500;
+	//this->PointOfLight = this->PointOfLight * this->cam->cameraview();
+
+	GVector tmp(PointOfLight.X, PointOfLight.Y, PointOfLight.Z, 1);
+
+	GVector result;
+	for (int i = 0; i <= 3; i++)
+	{
+		for (int j = 0; j <= 3; j++)
+		{
+			result[i] = result[i] + this->cam->cameraview()[j][i] * tmp[j];
+		}
+	}
+	this->PointOfLight.X = result[0];
+	this->PointOfLight.Y = result[1];
+	this->PointOfLight.Z = result[2];
+
+	this->PointOfLight.X += this->width / 2;
+	this->PointOfLight.Y += this->height / 2;
+	this->PointOfLight.Z += 0;
+
+	this->zbuffer = new int[this->width * this->height];
 }
 
 Scene::~Scene()
 {
-	//delete this->pixels;
-	//delete this->bricks;
-	//delete this->render;
-	//delete this->cam;
-	//this->pixels = nullptr;
-	//this->bricks = nullptr;
-	//this->render = nullptr;
-	//this->cam = nullptr;
+
 }
 
 void Scene::InitBitmap()
@@ -187,18 +166,21 @@ void Scene::DrawScene()
 	this->toCam();
 	for (int i = 0; i < this->width; i++)
 		for (int j = 0; j < this->height; j++)
-			this->pixels[j*this->width + i] = 0xffff00;
+			this->pixels[j*this->width + i] = 0x0022AA00;
+
+	for (int i = 0; i<this->width * this->height; i++)
+	{
+		this->zbuffer[i] = -999999;
+	}
 
 	for (int i = 0; i < MyModels.size(); i++)
 	{
 		//this->MyModels[i].PaintModel(this->pixels);
-		this->MyModels[i].FillModel(this->pixels);
+		this->MyModels[i].FillModel(this->pixels, this->width, this->height, this->zbuffer, this->PointOfLight);
 	}
 	
-
 	//Brick* brick = bricks->objects[0]; // temporary
 	//this->render->run(brick, this->cam);
-	
 
 	SelectObject(this->hdcMem, this->sBmp);
 	BitBlt(this->hdc, X, Y, this->width, this->height, this->hdcMem, 0, 0, SRCCOPY);
@@ -206,19 +188,6 @@ void Scene::DrawScene()
 
 void Scene::AddModel(Model MyModel)
 {
-	/*for (int i = 0; i < MyModel.NodesNum; i++)
-	{
-		MyModel.Nodes[i].X = MyModel.Nodes[i].X * 100 + this->width / 2 - MyModel.Center.X * 100;
-		MyModel.Nodes[i].Y = MyModel.Nodes[i].Y * 100 + this->height / 2 - MyModel.Center.Y * 100;
-		MyModel.Nodes[i].Z = MyModel.Nodes[i].Z * 100 - MyModel.Center.Z * 100;
-	}
-
-	MyModel.Center.X = this->width / 2;
-	MyModel.Center.Y = this->height / 2;
-	MyModel.Center.Z = 0;*/
-
-	//Brick* nbrick = new Brick(brick);
-
 //#pragma omp parallel for
 	for (int vertexIndex = 0; vertexIndex < MyModel.NodesNum; vertexIndex++)
 	{
@@ -253,12 +222,6 @@ void Scene::Clear()
 	this->MyModels.clear();
 }
 
-/*Composite* Scene::getBricks()
-{
-	return this->bricks;
-}*/
-
-
 void Scene::toCam()
 {
 	int xCenter = this->width / 2;
@@ -285,11 +248,6 @@ void Scene::toCam()
 			MyModel->NewNodes[vertexIndex].X = result[0] + xCenter;
 			MyModel->NewNodes[vertexIndex].Y = result[1] + yCenter;
 			MyModel->NewNodes[vertexIndex].Z = result[2];
-			//tmpVertex = tmpVertex * view;
-			//tmpVertex.X = tmpVertex.X + xCenter;
-			//tmpVertex.Y = tmpVertex.Y + yCenter;
-
-			//MyModel->Nodes[vertexIndex] = tmpVertex;
 		}
 
 		/*for (int faceIndex = 0; faceIndex < MyModel->facesCount(); faceIndex++)
