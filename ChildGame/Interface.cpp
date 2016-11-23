@@ -108,17 +108,18 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 
 	this->cam = new Camera(position, target);
 
-	this->PointOfLight.Z = 500;
+	this->PointOfLight.Z = -500;
 	//this->PointOfLight = this->PointOfLight * this->cam->cameraview();
 
 	GVector tmp(PointOfLight.X, PointOfLight.Y, PointOfLight.Z, 1);
+	GMatrix view(this->cam->cameraview());
 
 	GVector result;
 	for (int i = 0; i <= 3; i++)
 	{
 		for (int j = 0; j <= 3; j++)
 		{
-			result[i] = result[i] + this->cam->cameraview()[j][i] * tmp[j];
+			result[i] = result[i] + view[j][i] * tmp[j];
 		}
 	}
 	this->PointOfLight.X = result[0];
@@ -129,7 +130,7 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 	this->PointOfLight.Y += this->height / 2;
 	this->PointOfLight.Z += 0;
 
-	this->zbuffer = new int[this->width * this->height];
+	this->zbuffer = new float[this->width * this->height];
 }
 
 Scene::~Scene()

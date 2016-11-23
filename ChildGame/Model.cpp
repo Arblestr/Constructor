@@ -6,8 +6,8 @@
 
 double intencity(double X, double Y, double Z, GVector N, node light)
 {
-	GVector D(light.X - X, light.Y - Y, light.Z + Z, 1);
-	//D * (-1);
+	GVector D(light.X - X, light.Y - Y, light.Z - Z, 1);
+	D * (-1);
 	D.normalize();
 	N.normalize();
 	double I;
@@ -57,7 +57,7 @@ void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 	}
 }
 ////////////////
-void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, int* zbuffer,
+void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, float* zbuffer,
 	           GVector normA, GVector normB, GVector normC, node light)
 {
 	if (A.Y == B.Y && A.Y == C.Y) return;
@@ -72,72 +72,22 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 	for (int yCoord = 0; yCoord < faceHeight; yCoord++) {
 		bool secondPart = yCoord >(int)B.Y - (int)A.Y || (int)B.Y == (int)A.Y;
 
-		float ak = (float)yCoord / faceHeight;
-		float bk;
-		if (secondPart)
+		for (int xCoord = (int)A.X; xCoord <= (int)B.X; xCoord++)
 		{
-			halfHeight = (int)C.Y - (int)B.Y;
-			bk = (float)(yCoord - ((int)B.Y - (int)A.Y)) / halfHeight;
-		}
-		else
-		{
-			bk = (float)yCoord / halfHeight;
-		}
-
-		node na;
-		na.X = (int)A.X + ((int)C.X - (int)A.X) * ak;
-		na.Y = (int)A.Y + ((int)C.Y - (int)A.Y) * ak;
-		na.Z = (int)A.Z + ((int)C.Z - (int)A.Z) * ak;
-		GVector nNormA(normA + (normC - normA) * ak);
-
-		node nb;
-		GVector nNormB;
-		if (secondPart)
-		{
-			nb.X = (int)B.X + ((int)C.X - (int)B.X) * bk;
-			nb.Y = (int)B.Y + ((int)C.Y - (int)B.Y) * bk;
-			nb.Z = (int)B.Z + ((int)C.Z - (int)B.Z) * bk;
-
-			nNormB = normB + (normC - normB) * bk;
-		}
-		else
-		{
-			nb.X = (int)A.X + ((int)B.X - (int)A.X) * bk;
-			nb.Y = (int)A.Y + ((int)B.Y - (int)A.Y) * bk;
-			nb.Z = (int)A.Z + ((int)B.Z - (int)A.Z) * bk;
-
-			nNormB = normA + (normB - normA) * bk;
-		}
-
-		if ((int)na.X > (int)nb.X)
-		{
-			std::swap(na, nb);
-			std::swap(nNormA, nNormB);
-		}
-
-		for (int xCoord = (int)na.X; xCoord <= (int)nb.X; xCoord++)
-		{
-
-			double phi = 1.;
-			if ((int)nb.X != (int)na.X)
-			{
-				phi = (double)(xCoord - (int)na.X) / (double)((int)nb.X - (int)na.X);
-			}
-			//double AG = normA.length();
+		
 			node P;
-			P.X = (int)na.X + ((int)nb.X - (int)na.X) * phi;
-			P.Y = (int)na.Y + ((int)nb.Y - (int)na.Y) * phi;
-			P.Z = (int)na.Z + ((int)nb.Z - (int)na.Z) * phi;
-			GVector normP(nNormA + (nNormB - nNormA) * phi);
+			P.X = (int)((int)A.X + ((int)B.X - (int)A.X) );
+			P.Y = (int)((int)A.Y + ((int)B.Y - (int)A.Y) );
+			P.Z = ((int)A.Z + ((int)B.Z - (int)A.Z));
 
 			int pix = ((int)A.Y + yCoord) * width + xCoord;
 			if (pix >= 0 && pix <= width * height)
 			{
-				if (zbuffer[(int)P.X + (int)P.Y * width] <= P.Z)
+				if (zbuffer[pix] < P.Z)
 				{
-					zbuffer[(int)P.X + (int)P.Y * width] = P.Z;
-					double I = intencity(P.X, P.Y, P.Z, normP, light);
-					pixels[pix] =  RGB(GetRValue(0x00ff00) * I, GetGValue(0x00ff00) * I, GetBValue(0x00ff00) * I);
+					zbuffer[pix] = P.Z;
+					double I = intencity(P.X, P.Y, P.Z, normA, light);
+					pixels[pix] =  RGB(GetRValue(0x0000ff00) * I, GetGValue(0x0000ff00) * I, GetBValue(0x0000ff00) * I);
 				}
 			}
 		}
@@ -145,6 +95,146 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 	}
 
 }
+
+/*void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, int* zbuffer, GVector normA, GVector normB, GVector normC, node light)
+{
+	if (A.Y == B.Y && A.Y == C.Y) return;
+
+	if (A.Y > B.Y) { std::swap(A, B); std::swap(normA, normB); }
+	if (A.Y > C.Y) { std::swap(A, C); std::swap(normA, normC); }
+	if (B.Y > C.Y) { std::swap(B, C); std::swap(normB, normC); }
+
+	if (int(A.Y + .5) == int(B.Y + .5) && B.X < A.X) { std::swap(A, B); std::swap(normA, normB); }
+
+	int x1 = int(A.X + .5);
+	int x2 = int(B.X + .5);
+	int x3 = int(C.X + .5);
+	int y1 = int(A.Y + .5);
+	int y2 = int(B.Y + .5);
+	int y3 = int(C.Y + .5);
+	int z1 = int(A.Z + .5);
+	int z2 = int(B.Z + .5);
+	int z3 = int(C.Z + .5);
+
+	if ((y1 == y2) && (x1 > x2)) { std::swap(A, B); std::swap(normA, normB); }
+
+
+	double dx13 = 0, dx12 = 0, dx23 = 0;
+	double dz13 = 0, dz12 = 0, dz23 = 0;
+	GVector dn13;
+	GVector dn12;
+	GVector dn23;
+
+	if (y3 != y1)
+	{
+		dz13 = (z3 - z1) / (double)(y3 - y1);
+		dx13 = (x3 - x1) / (double)(y3 - y1);
+		dn13 = (normC - normA) / (y3 - y1);
+	}
+	if (y2 != y1)
+	{
+		dz12 = (z2 - z1) / (double)(y2 - y1);
+		dx12 = (x2 - x1) / (double)(y2 - y1);
+		dn12 = (normB - normA) / (double)(y2 - y1);
+	}
+	if (y3 != y2)
+	{
+		dz23 = (z3 - z2) / (double)(y3 - y2);
+		dx23 = (x3 - x2) / (double)(y3 - y2);
+		dn23 = (normC - normB) / (double)(y3 - y2);
+	}
+
+	double z = 0;
+	double dz = 0;
+
+	GVector normP;
+	GVector dnorm;
+
+	double wx1 = x1;
+	double wx2 = x1;
+	double wz1 = z1;
+	double wz2 = z1;
+	GVector wn1(normA);
+	GVector wn2(normA);
+
+	GVector _dn13(dn13);
+	double _dx13 = dx13;
+	double _dz13 = dz13;
+
+
+	if (dx13 > dx12)
+	{
+		std::swap(dn13, dn12);
+		std::swap(dx13, dx12);
+		std::swap(dz13, dz12);
+	}
+
+	if (y1 == y2) {
+		wx1 = x1;
+		wx2 = x2;
+		wz1 = z1;
+		wz2 = z2;
+		wn1 = normA;
+		wn2 = normB;
+	}
+
+	if (_dx13 < dx23)
+	{
+		std::swap(_dn13, dn23);
+		std::swap(_dx13, dx23);
+		std::swap(_dz13, dz23);
+	}
+
+	for (int yCoord = y1; yCoord < y3; yCoord++)
+	{
+		z = wz1;
+		normP = wn1;
+
+		if (wx1 != wx2)
+		{
+			dz = (wz2 - wz1) / (double)(wx2 - wx1);
+			dnorm = (wn2 - wn1) / (double)(wx2 - wx1);
+		}
+
+		for (int xCoord = wx1; xCoord < wx2; xCoord++)
+		{
+			int pix = yCoord * width + xCoord;
+			if (pix >= 0 && pix <= width * height)
+			{
+				if (zbuffer[pix] < z)
+				{
+					double I = intencity(xCoord, yCoord, z, normP, light);
+					//if (zbuffer[pix] < z)
+					{
+						zbuffer[pix] = z;
+						pixels[pix] = RGB(GetRValue(0x0000ff00) * I, GetGValue(0x0000ff00) * I, GetBValue(0x0000ff00) * I);
+					}
+				}
+			}
+			z += dz;
+			normP = normP + dnorm;
+		}
+		if (yCoord < y2)
+		{
+			wx1 += dx13;
+			wx2 += dx12;
+			wz1 += dz13;
+			wz2 += dz12;
+			wn1 = wn1 + dn13;
+			wn2 = wn1 + dn12;
+		}
+		else
+		{
+			wx1 += _dx13;
+			wx2 += dx23;
+			wz1 += _dz13;
+			wz2 += dz23;
+			wn1 = wn1 + _dn13;
+			wn2 = wn1 + dn12;
+		}
+	}
+}*/
+
 ////////////////
 
 
@@ -182,7 +272,10 @@ void Model::ReadNodes()
 	node BufNode;
 	polygon BufPolygon;
 	GVector BufNormal;
-	//BufNormal[3] = 1;
+	double BufNormalX;
+	double BufNormalY;
+	double BufNormalZ;
+	BufNormal[3] = 0;
 	fscanf_s(this->F, "%d", &(this->NodesNum));
 	for (int i = 0; i < this->NodesNum; i++)
 	{
@@ -202,7 +295,7 @@ void Model::ReadNodes()
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		fscanf_s(this->F, "%d %d %d", &(BufNormal[0]), &(BufNormal[1]), &(BufNormal[2]));
+		fscanf_s(this->F, "%lf %lf %lf", &(BufNormal[0]), &(BufNormal[1]), &(BufNormal[2]));
 		this->Normals.push_back(BufNormal);
 	}
 	fscanf_s(this->F, "%f %f %f", &(this->Center.X), &(this->Center.Y), &(this->Center.Z));
@@ -229,7 +322,7 @@ void Model::PaintModel(unsigned long* pixels)
 	}
 }
 
-void Model::FillModel(unsigned long* pixels, int width, int height, int* zbuffer, node PointOfLight)
+void Model::FillModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight)
 {
 	node A;
 	node B;

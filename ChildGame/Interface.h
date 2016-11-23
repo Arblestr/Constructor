@@ -65,7 +65,7 @@ private:
 	int height;
 
 	unsigned long* pixels;
-	int* zbuffer;
+	float* zbuffer;
 
 	BITMAPINFO sBmInfo;
 	HBITMAP sBmp;

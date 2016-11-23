@@ -40,7 +40,7 @@ public:
 
 	void LoadFromFile(char* FileName);
 	void PaintModel(unsigned long* pixels);
-	void FillModel(unsigned long* pixels, int width, int height, int* zbuffer, node PointOfLight);
+	void FillModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight);
 	void MoveX(float DeltaMove);
 	void MoveY(float DeltaMove);
 	void MoveZ(float DeltaMove);
