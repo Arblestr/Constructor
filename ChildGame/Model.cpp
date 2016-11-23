@@ -57,54 +57,19 @@ void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 	}
 }
 ////////////////
-void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, float* zbuffer,
-	           GVector normA, GVector normB, GVector normC, node light)
+void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, float* zbuffer, GVector normA, node light)
 {
 	if (A.Y == B.Y && A.Y == C.Y) return;
 
-	if (A.Y > B.Y) { std::swap(A, B); std::swap(normA, normB); }
-	if (A.Y > C.Y) { std::swap(A, C); std::swap(normA, normC); }
-	if (B.Y > C.Y) { std::swap(B, C); std::swap(normB, normC); }
+	if (A.Y > B.Y)
+	    std::swap(A, B);
+	if (A.Y > C.Y) 
+	    std::swap(A, C);
+	if (B.Y > C.Y) 
+	    std::swap(B, C);
 
-	int faceHeight = (int)C.Y - (int)A.Y;
-	int halfHeight = (int)B.Y - (int)A.Y;
-
-	for (int yCoord = 0; yCoord < faceHeight; yCoord++) {
-		bool secondPart = yCoord >(int)B.Y - (int)A.Y || (int)B.Y == (int)A.Y;
-
-		for (int xCoord = (int)A.X; xCoord <= (int)B.X; xCoord++)
-		{
-		
-			node P;
-			P.X = (int)((int)A.X + ((int)B.X - (int)A.X) );
-			P.Y = (int)((int)A.Y + ((int)B.Y - (int)A.Y) );
-			P.Z = ((int)A.Z + ((int)B.Z - (int)A.Z));
-
-			int pix = ((int)A.Y + yCoord) * width + xCoord;
-			if (pix >= 0 && pix <= width * height)
-			{
-				if (zbuffer[pix] < P.Z)
-				{
-					zbuffer[pix] = P.Z;
-					double I = intencity(P.X, P.Y, P.Z, normA, light);
-					pixels[pix] =  RGB(GetRValue(0x0000ff00) * I, GetGValue(0x0000ff00) * I, GetBValue(0x0000ff00) * I);
-				}
-			}
-		}
-
-	}
-
-}
-
-/*void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, int* zbuffer, GVector normA, GVector normB, GVector normC, node light)
-{
-	if (A.Y == B.Y && A.Y == C.Y) return;
-
-	if (A.Y > B.Y) { std::swap(A, B); std::swap(normA, normB); }
-	if (A.Y > C.Y) { std::swap(A, C); std::swap(normA, normC); }
-	if (B.Y > C.Y) { std::swap(B, C); std::swap(normB, normC); }
-
-	if (int(A.Y + .5) == int(B.Y + .5) && B.X < A.X) { std::swap(A, B); std::swap(normA, normB); }
+	if (int(A.Y + .5) == int(B.Y + .5) && B.X < A.X) 
+		std::swap(A, B);
 
 	int x1 = int(A.X + .5);
 	int x2 = int(B.X + .5);
@@ -112,75 +77,57 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 	int y1 = int(A.Y + .5);
 	int y2 = int(B.Y + .5);
 	int y3 = int(C.Y + .5);
-	int z1 = int(A.Z + .5);
-	int z2 = int(B.Z + .5);
-	int z3 = int(C.Z + .5);
-
-	if ((y1 == y2) && (x1 > x2)) { std::swap(A, B); std::swap(normA, normB); }
-
+	float z1 = A.Z;
+	float z2 = B.Z;
+	float z3 = C.Z;
 
 	double dx13 = 0, dx12 = 0, dx23 = 0;
 	double dz13 = 0, dz12 = 0, dz23 = 0;
-	GVector dn13;
-	GVector dn12;
-	GVector dn23;
 
 	if (y3 != y1)
 	{
 		dz13 = (z3 - z1) / (double)(y3 - y1);
 		dx13 = (x3 - x1) / (double)(y3 - y1);
-		dn13 = (normC - normA) / (y3 - y1);
 	}
 	if (y2 != y1)
 	{
 		dz12 = (z2 - z1) / (double)(y2 - y1);
 		dx12 = (x2 - x1) / (double)(y2 - y1);
-		dn12 = (normB - normA) / (double)(y2 - y1);
 	}
 	if (y3 != y2)
 	{
 		dz23 = (z3 - z2) / (double)(y3 - y2);
 		dx23 = (x3 - x2) / (double)(y3 - y2);
-		dn23 = (normC - normB) / (double)(y3 - y2);
 	}
 
 	double z = 0;
 	double dz = 0;
 
-	GVector normP;
-	GVector dnorm;
-
 	double wx1 = x1;
 	double wx2 = x1;
 	double wz1 = z1;
 	double wz2 = z1;
-	GVector wn1(normA);
-	GVector wn2(normA);
 
-	GVector _dn13(dn13);
 	double _dx13 = dx13;
 	double _dz13 = dz13;
 
 
 	if (dx13 > dx12)
 	{
-		std::swap(dn13, dn12);
 		std::swap(dx13, dx12);
 		std::swap(dz13, dz12);
 	}
 
-	if (y1 == y2) {
+	if (y1 == y2)
+	{
 		wx1 = x1;
 		wx2 = x2;
 		wz1 = z1;
 		wz2 = z2;
-		wn1 = normA;
-		wn2 = normB;
 	}
 
 	if (_dx13 < dx23)
 	{
-		std::swap(_dn13, dn23);
 		std::swap(_dx13, dx23);
 		std::swap(_dz13, dz23);
 	}
@@ -188,31 +135,23 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 	for (int yCoord = y1; yCoord < y3; yCoord++)
 	{
 		z = wz1;
-		normP = wn1;
 
 		if (wx1 != wx2)
-		{
-			dz = (wz2 - wz1) / (double)(wx2 - wx1);
-			dnorm = (wn2 - wn1) / (double)(wx2 - wx1);
-		}
+	        dz = (wz2 - wz1) / (double)(wx2 - wx1);
 
 		for (int xCoord = wx1; xCoord < wx2; xCoord++)
 		{
 			int pix = yCoord * width + xCoord;
 			if (pix >= 0 && pix <= width * height)
-			{
 				if (zbuffer[pix] < z)
 				{
-					double I = intencity(xCoord, yCoord, z, normP, light);
-					//if (zbuffer[pix] < z)
-					{
-						zbuffer[pix] = z;
-						pixels[pix] = RGB(GetRValue(0x0000ff00) * I, GetGValue(0x0000ff00) * I, GetBValue(0x0000ff00) * I);
-					}
+					double I = intencity(xCoord, yCoord, z, normA, light);
+					zbuffer[pix] = z;
+			     	pixels[pix] = RGB(GetRValue(0x0000ff00) * I,
+						              GetGValue(0x0000ff00) * I, 
+					                  GetBValue(0x0000ff00) * I);
 				}
-			}
 			z += dz;
-			normP = normP + dnorm;
 		}
 		if (yCoord < y2)
 		{
@@ -220,8 +159,6 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 			wx2 += dx12;
 			wz1 += dz13;
 			wz2 += dz12;
-			wn1 = wn1 + dn13;
-			wn2 = wn1 + dn12;
 		}
 		else
 		{
@@ -229,16 +166,11 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 			wx2 += dx23;
 			wz1 += _dz13;
 			wz2 += dz23;
-			wn1 = wn1 + _dn13;
-			wn2 = wn1 + dn12;
 		}
 	}
-}*/
+}
 
 ////////////////
-
-
-/////////////////
 
 Model::Model()
 {
@@ -337,7 +269,7 @@ void Model::FillModel(unsigned long* pixels, int width, int height, float* zbuff
 		N = this->Normals[this->Polygons[i].N];
 		//int kk = this->Polygons[i].N;
 		//double AG = N.length();
-		fillFaces(A, B, C, pixels, width, height, zbuffer, N,N,N, PointOfLight);
+		fillFaces(A, B, C, pixels, width, height, zbuffer, N, PointOfLight);
 	}
 }
 
