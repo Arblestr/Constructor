@@ -37,6 +37,9 @@ public:
 	vector<node> NewNodes;
 	vector<polygon> Polygons;
 	vector<GVector> Normals;
+	GMatrix rotate;
+	GMatrix vMatrixRotation;	
+	GMatrix nMatrixRotation;
 
 	void LoadFromFile(char* FileName);
 	void PaintModel(unsigned long* pixels);
@@ -47,6 +50,7 @@ public:
 	void RotateX(float DeltaRotate);
 	void RotateY(float DeltaRotate);
 	void RotateZ(float DeltaRotate);
+	void initModification(node* Center);
 	void ClearModel();
 };
 

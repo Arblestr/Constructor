@@ -2,6 +2,7 @@
 #include "math.h"
 #include "Model.h"
 #include <algorithm>
+#include "MatrixVector.h"
 
 
 double intencity(double X, double Y, double Z, GVector N, node light)
@@ -338,6 +339,21 @@ void Model::RotateZ(float DeltaRotate)
 		this->Nodes[i].X = NewX;
 		this->Nodes[i].Y = NewY;
 	}
+}
+
+void Model::initModification(node* Center)
+{
+	this->Center.X = Center->X;
+	this->Center.Y = Center->Y;
+	this->Center.Z = Center->Z;
+	GMatrix moveToOrigin = matrixMove(-this->Center.X, -this->Center.Y, -this->Center.Z);
+	GMatrix moveBack = matrixMove(this->Center.X, this->Center.Y, this->Center.Z);
+
+	this->vMatrixRotation = moveToOrigin * rotate * moveBack;
+
+	this->nMatrixRotation = this->vMatrixRotation;
+	this->nMatrixRotation.transposition();
+	this->nMatrixRotation.inverse();
 }
 
 void Model::ClearModel()

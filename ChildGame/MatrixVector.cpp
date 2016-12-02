@@ -270,3 +270,228 @@ GMatrix& GMatrix::operator*(const double value)
 	}
 	return (*this);
 }
+
+GMatrix GMatrix::operator*(const GMatrix& other)
+{
+	GMatrix result(*this);
+
+	for (size_t i = 0; i <= 3; i++)
+	{
+		GVector row((*this)[i]);
+		for (size_t j = 0; j <= 3; j++)
+		{
+			GVector column(other[0][j], other[1][j], other[2][j], other[3][j]);
+			double sum = 0;
+			for (size_t k = 0; k <= 3; k++)
+				sum += row[k] * column[k];
+			result[i][j] = sum;
+		}
+	}
+	return result;
+}
+
+bool GMatrix::inverse()
+{
+	GMatrix result;
+
+	for (int i = 0; i <= 3; ++i)
+	{
+		for (int j = 0; j <= 3; ++j)
+			result[i][j] = 0.0;
+
+		result[i][i] = 1.0;
+	}
+
+
+	GMatrix tmp(*this);
+
+	for (int k = 0; k <= 3; ++k)
+	{
+		if (fabs(tmp[k][k]) < 1e-8)
+		{
+			bool changed = false;
+			for (int i = k + 1; i <= 3; ++i)
+			{
+				if (fabs(tmp[i][k]) > 1e-8)
+				{
+					std::swap(tmp[k], tmp[i]);
+					std::swap(result[k], result[i]);
+
+					changed = true;
+					break;
+				}
+			}
+
+			if (!changed)
+			{
+				return false;
+			}
+		}
+
+
+		double div = tmp[k][k];
+		for (int j = 0; j <= 3; ++j)
+		{
+			tmp[k][j] /= div;
+			result[k][j] /= div;
+		}
+
+		for (int i = k + 1; i <= 3; ++i)
+		{
+			double multi = tmp[i][k];
+			for (int j = 0; j <= 3; ++j)
+			{
+				tmp[i][j] -= multi * tmp[k][j];
+				result[i][j] -= multi * result[k][j];
+			}
+		}
+	}
+
+	for (int k = 3; k > 0; --k)
+	{
+		for (int i = k - 1; i + 1 > 0; --i)
+		{
+			double multi = tmp[i][k];
+			for (int j = 0; j <= 3; ++j)
+			{
+				tmp[i][j] -= multi * tmp[k][j];
+				result[i][j] -= multi * result[k][j];
+			}
+		}
+	}
+
+	*this = result;
+
+	return true;
+}
+
+GMatrix GMatrix::transposition()
+{
+	GMatrix result;
+	for (int i = 0; i <= 3; i++)
+	{
+		for (int j = 0; j <= 3; j++)
+		{
+			result[i][j] = this->matrix[j][i];
+		}
+	}
+	*this = result;
+	return *this;
+}
+
+GMatrix matrixrotationX(double angle)
+{
+	double cosa = cos(angle);
+	double sina = sin(angle);
+
+	GMatrix transform;
+
+	transform[0][0] = cosa;
+	transform[0][1] = 0;
+	transform[0][2] = sina;
+	transform[0][3] = 0;
+
+	transform[1][0] = 0;
+	transform[1][1] = 1;
+	transform[1][2] = 0;
+	transform[1][3] = 0;
+
+	transform[2][0] = -sina;
+	transform[2][1] = 0;
+	transform[2][2] = cosa;
+	transform[2][3] = 0;
+
+	transform[3][0] = 0;
+	transform[3][1] = 0;
+	transform[3][2] = 0;
+	transform[3][3] = 1;
+
+	return transform;
+}
+
+GMatrix matrixrotationY(double angle)
+{
+	double cosa = cos(angle);
+	double sina = sin(angle);
+
+	GMatrix transform;
+
+	transform[0][0] = 1;
+	transform[0][1] = 0;
+	transform[0][2] = 0;
+	transform[0][3] = 0;
+
+	transform[1][0] = 0;
+	transform[1][1] = cosa;
+	transform[1][2] = -sina;
+	transform[1][3] = 0;
+
+	transform[2][0] = 0;
+	transform[2][1] = sina;
+	transform[2][2] = cosa;
+	transform[2][3] = 0;
+
+	transform[3][0] = 0;
+	transform[3][1] = 0;
+	transform[3][2] = 0;
+	transform[3][3] = 1;
+
+	return transform;
+}
+
+GMatrix matrixrotationZ(double angle)
+{
+	double cosa = cos(angle);
+	double sina = sin(angle);
+
+	GMatrix transform;
+
+	transform[0][0] = cosa;
+	transform[0][1] = -sina;
+	transform[0][2] = 0;
+	transform[0][3] = 0;
+
+	transform[1][0] = sina;
+	transform[1][1] = cosa;
+	transform[1][2] = 0;
+	transform[1][3] = 0;
+
+	transform[2][0] = 0;
+	transform[2][1] = 0;
+	transform[2][2] = 1;
+	transform[2][3] = 0;
+
+	transform[3][0] = 0;
+	transform[3][1] = 0;
+	transform[3][2] = 0;
+	transform[3][3] = 1;
+
+	return transform;
+}
+
+GMatrix matrixMove(double X, double Y, double Z)
+{
+	GMatrix transform;
+
+	transform[0][0] = 1;
+	transform[0][1] = 0;
+	transform[0][2] = 0;
+	transform[0][3] = 0;
+
+	transform[1][0] = 0;
+	transform[1][1] = 1;
+	transform[1][2] = 0;
+	transform[1][3] = 0;
+
+	transform[2][0] = 0;
+	transform[2][1] = 0;
+	transform[2][2] = 1;
+	transform[2][3] = 0;
+
+	transform[3][0] = X;
+	transform[3][1] = Y;
+	transform[3][2] = Z;
+	transform[3][3] = 1;
+
+	return transform;
+}

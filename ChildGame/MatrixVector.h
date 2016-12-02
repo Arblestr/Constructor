@@ -47,6 +47,8 @@ public:
 
 	bool operator!=(const GVector& other) const;
 
+
+
 private:
 	vector<double> vec;	/*!< Vector contains coordinates */
 };
@@ -70,7 +72,16 @@ public:
 	const GVector& operator[](const unsigned long index) const;
 	GMatrix& operator-();
 	GMatrix& operator*(const double value);
+	GMatrix operator*(const GMatrix& other);
+	bool inverse();
+	GMatrix transposition();
 
 private:
 	vector<GVector> matrix;	
 };
+
+
+GMatrix matrixrotationX(double angle);
+GMatrix matrixrotationY(double angle);
+GMatrix matrixrotationZ(double angle);
+GMatrix matrixMove(double X, double Y, double Z);
