@@ -297,6 +297,8 @@ void Model::MoveZ(float DeltaMove)
 
 void Model::RotateX(float DeltaRotate)
 {
+	this->rotate = matrixrotationX(DeltaRotate*M_PI / 180);
+	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		float NewY =
@@ -309,10 +311,17 @@ void Model::RotateX(float DeltaRotate)
 		this->Nodes[i].Y = NewY;
 		this->Nodes[i].Z = NewZ;
 	}
+
+	for (int j = 0; j < this->Normals.size(); j++)
+	{
+		this->Normals[j] = this->Normals[j] * this->nMatrixRotation;
+	}
 }
 
 void Model::RotateY(float DeltaRotate)
 {
+	this->rotate = matrixrotationY(DeltaRotate*M_PI / 180);
+	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		float NewX = this->Center.X + (this->Nodes[i].X - this->Center.X) * cos(DeltaRotate*M_PI / 180) -
@@ -324,10 +333,17 @@ void Model::RotateY(float DeltaRotate)
 		this->Nodes[i].X = NewX;
 		this->Nodes[i].Z = NewZ;
 	}
+
+	for (int j = 0; j < this->Normals.size(); j++)
+	{
+		this->Normals[j] = this->Normals[j] * this->nMatrixRotation;
+	}
 }
 
 void Model::RotateZ(float DeltaRotate)
 {
+	this->rotate = matrixrotationZ(DeltaRotate*M_PI / 180);
+	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		float NewX = this->Center.X + (this->Nodes[i].X - this->Center.X) * cos(DeltaRotate*M_PI / 180) -
@@ -339,13 +355,18 @@ void Model::RotateZ(float DeltaRotate)
 		this->Nodes[i].X = NewX;
 		this->Nodes[i].Y = NewY;
 	}
+
+	for (int j = 0; j < this->Normals.size(); j++)
+	{
+		this->Normals[j] = this->Normals[j] * this->nMatrixRotation;
+	}
 }
 
 void Model::initModification(node* Center)
 {
-	this->Center.X = Center->X;
-	this->Center.Y = Center->Y;
-	this->Center.Z = Center->Z;
+	//this->Center.X = Center->X;
+	//this->Center.Y = Center->Y;
+	//this->Center.Z = Center->Z;
 	GMatrix moveToOrigin = matrixMove(-this->Center.X, -this->Center.Y, -this->Center.Z);
 	GMatrix moveBack = matrixMove(this->Center.X, this->Center.Y, this->Center.Z);
 

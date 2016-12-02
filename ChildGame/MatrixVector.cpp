@@ -9,12 +9,12 @@ GVector::GVector()
 	}
 }
 
-GVector::GVector(double X, double Y, double Z, double lenglth)
+GVector::GVector(double X, double Y, double Z, double hc)
 {
 	this->vec.push_back(X);
 	this->vec.push_back(Y);
 	this->vec.push_back(Z);
-	this->vec.push_back(1);
+	this->vec.push_back(hc);
 }
 
 GVector::GVector(const GVector& other)
@@ -32,71 +32,61 @@ GVector::~GVector()
 	this->vec.clear();
 }
 
-GVector& GVector::operator=(GVector& other)
+GVector& GVector::operator=(GVector other)
 {
 	this->vec = other.getVec();
 	return *this;
 }
 
-GVector& GVector::operator=(const GVector& other)
+GVector GVector::operator+(const GVector other)
 {
-	this->vec = other.getVec();
-	return *this;
+	GVector result;
+	result[0] = (*this)[0] + other[0];
+	result[1] = (*this)[1] + other[1];
+	result[2] = (*this)[2] + other[2];
+	result[3] = (*this)[3];
+	return result;
 }
 
-GVector& GVector::operator=(GVector&& other)
+GVector GVector::operator-(const GVector other)
 {
-	this->vec = other.getVec();
-	return *this;
+	GVector result;
+	result[0] = (*this)[0] - other[0];
+	result[1] = (*this)[1] - other[1];
+	result[2] = (*this)[2] - other[2];
+	result[3] = (*this)[3];
+	return result;
 }
 
-GVector& GVector::operator+(const GVector other)
+GVector GVector::operator/(const double value)
 {
-	(*this)[0] = (*this)[0] + other[0];
-	(*this)[1] = (*this)[1] + other[1];
-	(*this)[2] = (*this)[2] + other[2];
-	return *this;
+	GVector result;
+	result[0] = (*this)[0] / value;
+	result[1] = (*this)[1] / value;
+	result[2] = (*this)[2] / value;
+	result[3] = (*this)[3];
+	return result;
 }
 
-GVector& GVector::operator-(const GVector other)
+GVector GVector::operator*(const double value)
 {
-	(*this)[0] = (*this)[0] - other[0];
-	(*this)[1] = (*this)[1] - other[1];
-	(*this)[2] = (*this)[2] - other[2];
-	return *this;
-}
-
-GVector& GVector::operator/(const double value)
-{
-	(*this)[0] = (*this)[0] / value;
-	(*this)[1] = (*this)[1] / value;
-	(*this)[2] = (*this)[2] / value;
-	return *this;
-}
-
-GVector& GVector::operator*(const double value)
-{
-	(*this)[0] = (*this)[0] * value;
-	(*this)[1] = (*this)[1] * value;
-	(*this)[2] = (*this)[2] * value;
-	return *this;
+	GVector result;
+	result[0] = (*this)[0] * value;
+	result[1] = (*this)[1] * value;
+	result[2] = (*this)[2] * value;
+	result[3] = (*this)[3];
+	return result;
 }
 
 double& GVector::operator[](const size_t index)
 {
-	if (index > 3 || index < 0)
-	{
-		//throw VectorIndexError();
-	}
+	
 	return this->vec[index];
 }
 
 const double& GVector::operator[](const size_t index) const
 {
-	if (index > 3 || index < 0)
-	{
-		//throw VectorIndexError();
-	}
+	
 	return this->vec[index];
 }
 
@@ -116,8 +106,14 @@ double GVector::length()
 
 GVector GVector::normalize()
 {
-	double norm = 1 / (*this).length();
-	for (int i = 0; i <= 3; ++i)
+	double length = (*this).length();
+	if (length == 0)
+	{
+		return *this;
+	}
+
+	double norm = 1 / length;
+	for (int i = 0; i < 3; ++i)
 	{
 		(*this)[i] = (*this)[i] * norm;
 	}
@@ -171,7 +167,7 @@ bool GVector::operator==(const GVector& other) const
 {
 	for (int i = 0; i < 4; i++)
 	{
-		if (this->vec[i] != other[i])
+		if (round(this->vec[i] * 100) / 100. != round(other[i] * 100) / 100.)
 		{
 			return false;
 		}
@@ -183,7 +179,7 @@ bool GVector::operator!=(const GVector& other) const
 {
 	for (int i = 0; i < 4; i++)
 	{
-		if (this->vec[i] != other[i])
+		if (round(this->vec[i] * 100) / 100. != round(other[i] * 100) / 100.)
 		{
 			return true;
 		}
@@ -191,11 +187,11 @@ bool GVector::operator!=(const GVector& other) const
 	return false;
 }
 
-/////////////////
+//////
 
 GMatrix::GMatrix()
 {
-	for (unsigned long i = 0; i <= 3; i++)
+	for (size_t i = 0; i <= 3; i++)
 	{
 		GVector tmp;
 		this->matrix.push_back(tmp);
@@ -204,7 +200,7 @@ GMatrix::GMatrix()
 
 GMatrix::GMatrix(const GMatrix& other)
 {
-	for (unsigned long i = 0; i <= 3; i++)
+	for (size_t i = 0; i <= 3; i++)
 	{
 		this->matrix.push_back(other[i]);
 	}
@@ -212,7 +208,7 @@ GMatrix::GMatrix(const GMatrix& other)
 
 GMatrix::GMatrix(GMatrix&& other)
 {
-	for (unsigned long i = 0; i <= 3; i++)
+	for (size_t i = 0; i <= 3; i++)
 	{
 		this->matrix.push_back(other[i]);
 	}
@@ -223,19 +219,10 @@ GMatrix::~GMatrix()
 	this->matrix.clear();
 }
 
-GMatrix& GMatrix::operator=(GMatrix& other)
+GMatrix& GMatrix::operator=(GMatrix other)
 {
-	for (unsigned long i = 0; i <= 3; i++)
-	{
-		this->matrix.push_back(other[i]);
-	}
-
-	return (*this);
-}
-
-GMatrix& GMatrix::operator=(GMatrix&& other)
-{
-	for (unsigned long i = 0; i <= 3; i++)
+	this->matrix.clear();
+	for (size_t i = 0; i <= 3; i++)
 	{
 		this->matrix.push_back(other[i]);
 	}
@@ -253,22 +240,25 @@ const GVector& GMatrix::operator[](const unsigned long index) const
 	return this->matrix[index];
 }
 
-GMatrix& GMatrix::operator-()
-{
-	return *this * (-1);
-}
-
-GMatrix& GMatrix::operator*(const double value)
+GMatrix GMatrix::operator-()
 {
 	GMatrix result(*this);
-	for (unsigned long i = 0; i <= 3; i++)
+	result = result * (-1);
+	return result;;
+}
+
+GMatrix GMatrix::operator*(const double value)
+{
+	GMatrix result(*this);
+
+	for (size_t i = 0; i <= 3; i++)
 	{
-		for (unsigned long j = 0; j <= 3; j++)
+		for (size_t j = 0; j <= 3; j++)
 		{
 			result[i][j] = result[i][j] * value;
 		}
 	}
-	return (*this);
+	return result;
 }
 
 GMatrix GMatrix::operator*(const GMatrix& other)
