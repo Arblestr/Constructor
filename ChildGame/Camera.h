@@ -6,20 +6,19 @@ class Camera
 public:
 	Camera();
 
-	Camera(GVector position, GVector direction);
+	Camera(Cvector position, Cvector direction);
 
 	void rotateHorizontalSphere(double angle);
 
 	void rotateVerticalSphere(double angle);
 
-	GMatrix cameraview();
+	Cmatrix cameraview();
 
-	GVector position;	/*!< Camera position */
-	GVector target;		/*! Point on which looks camera */
+	Cvector position;	/*!< Camera position */
+	Cvector target;		/*! Point on which looks camera */
 
 private:
-	GVector right;		/*! "X" axis of camera coordinate system */
-	GVector up;			/*! "Y" axis of camera coordinate system */
-	GVector direction;	/*! "Z" axis of camera coordinate system */
-
+	Cvector right;		/*! "X" axis of camera coordinate system */
+	Cvector up;			/*! "Y" axis of camera coordinate system */
+	Cvector direction;	/*! "Z" axis of camera coordinate system */
 };

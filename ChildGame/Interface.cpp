@@ -31,8 +31,6 @@ Button::Button(WCHAR* Text, int X, int Y, int Height, int Width, int Id)
 }
 Button::~Button()
 {
-	//MessageBox(this->hWnd, L"dd", L"dddd", MB_OK);
-	//DestroyWindow(GetDlgItem(this->hWnd, this->Id));
 }
 
 
@@ -59,7 +57,7 @@ Edit::Edit(WCHAR* Text, int X, int Y, int Height, int Width, int Id)
 	this->Id = Id;
 
 	CreateWindowEx(WS_EX_WINDOWEDGE, L"edit", Text,
-		WS_CHILD | WS_VISIBLE | WS_BORDER ,
+		WS_CHILD | WS_VISIBLE | WS_BORDER,
 		X, Y, Width, Height,
 		this->hWnd, (HMENU)this->Id, NULL, NULL);
 }
@@ -79,11 +77,7 @@ Scene::Scene()
 	this->height = 0;
 
 	this->InitBitmap();
-
-	//this->bricks = nullptr;
 	this->pixels = nullptr;
-	//this->render = nullptr;
-	//this->cam = nullptr;
 }
 
 Scene::Scene(HWND hWnd, int x, int y, int width, int height)
@@ -91,30 +85,28 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 	this->hWnd = hWnd;
 	this->hdc = GetDC(hWnd);
 	this->hdcMem = CreateCompatibleDC(this->hdc);
+	this->color = 0x0fffff;
 
 	this->X = x;
 	this->Y = y;
 	this->width = width;
 	this->height = height;
 
-	//this->model = model;
-
 	this->pixels = new unsigned long[this->width * this->height];
 
 	this->InitBitmap();
 
-	GVector position(0, 0, 500, 1);
-	GVector target(0, 0, 0, 1);
+	Cvector position(0, 0, 500, 1);
+	Cvector target(0, 0, 0, 1);
 
 	this->cam = new Camera(position, target);
 
 	this->PointOfLight.Z = -500;
-	//this->PointOfLight = this->PointOfLight * this->cam->cameraview();
 
-	GVector tmp(PointOfLight.X, PointOfLight.Y, PointOfLight.Z, 1);
-	GMatrix view(this->cam->cameraview());
+	Cvector tmp(PointOfLight.X, PointOfLight.Y, PointOfLight.Z, 1);
+	Cmatrix view(this->cam->cameraview());
 
-	GVector result;
+	Cvector result;
 	for (int i = 0; i <= 3; i++)
 	{
 		for (int j = 0; j <= 3; j++)
@@ -131,6 +123,7 @@ Scene::Scene(HWND hWnd, int x, int y, int width, int height)
 	this->PointOfLight.Z += 0;
 
 	this->zbuffer = new float[this->width * this->height];
+
 }
 
 Scene::~Scene()
@@ -167,21 +160,17 @@ void Scene::DrawScene()
 	this->toCam();
 	for (int i = 0; i < this->width; i++)
 		for (int j = 0; j < this->height; j++)
-			this->pixels[j*this->width + i] = 0x0022AA00;
+			this->pixels[j*this->width + i] = RGB(GetBValue(this->color), GetGValue(this->color), GetRValue(this->color));
 
 	for (int i = 0; i<this->width * this->height; i++)
 	{
-		this->zbuffer[i] = -999999;
+		this->zbuffer[i] = -999;
 	}
 
 	for (int i = 0; i < MyModels.size(); i++)
 	{
-		//this->MyModels[i].PaintModel(this->pixels);
-		this->MyModels[i].FillModel(this->pixels, this->width, this->height, this->zbuffer, this->PointOfLight);
+		this->MyModels[i].PaintModel(this->pixels, this->width, this->height, this->zbuffer, this->PointOfLight);
 	}
-	
-	//Brick* brick = bricks->objects[0]; // temporary
-	//this->render->run(brick, this->cam);
 
 	SelectObject(this->hdcMem, this->sBmp);
 	BitBlt(this->hdc, X, Y, this->width, this->height, this->hdcMem, 0, 0, SRCCOPY);
@@ -189,7 +178,7 @@ void Scene::DrawScene()
 
 void Scene::AddModel(Model MyModel)
 {
-//#pragma omp parallel for
+	//#pragma omp parallel for
 	for (int vertexIndex = 0; vertexIndex < MyModel.NodesNum; vertexIndex++)
 	{
 		node v;
@@ -228,7 +217,7 @@ void Scene::toCam()
 	int xCenter = this->width / 2;
 	int yCenter = this->height / 2;
 
-	GMatrix view = this->cam->cameraview();
+	Cmatrix view = this->cam->cameraview();
 
 	for (int Index = 0; Index < this->MyModels.size(); Index++)
 	{
@@ -236,9 +225,8 @@ void Scene::toCam()
 
 		for (int vertexIndex = 0; vertexIndex < MyModel->NodesNum; vertexIndex++)
 		{
-			//MyModel->Nodes[vertexIndex];
-			GVector NodVec(MyModel->Nodes[vertexIndex].X, MyModel->Nodes[vertexIndex].Y, MyModel->Nodes[vertexIndex].Z, 1);
-			GVector result;
+			Cvector NodVec(MyModel->Nodes[vertexIndex].X, MyModel->Nodes[vertexIndex].Y, MyModel->Nodes[vertexIndex].Z, 1);
+			Cvector result;
 			for (int i = 0; i <= 3; i++)
 			{
 				for (int j = 0; j <= 3; j++)
@@ -250,17 +238,6 @@ void Scene::toCam()
 			MyModel->NewNodes[vertexIndex].Y = result[1] + yCenter;
 			MyModel->NewNodes[vertexIndex].Z = result[2];
 		}
-
-		/*for (int faceIndex = 0; faceIndex < MyModel->facesCount(); faceIndex++)
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				GVector tmpN = nbrick->VNormal[faceIndex][i];
-				//tmpN = tmpN * view;
-				nbrick->sVNormal[faceIndex][i] = tmpN;
-			}
-		}*/
 	}
 
 }
-

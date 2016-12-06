@@ -23,7 +23,7 @@ typedef struct polygon
 class Model 
 {
 private:
-	int PolygonNum;
+	
 	FILE* F;
 	void ReadNodes();
 
@@ -32,18 +32,20 @@ public:
 	~Model();
 	int NodesNum;
 	node Center;
+	COLORREF Color;
+	float coeff;
+	int PolygonNum;
 
 	vector<node> Nodes;
 	vector<node> NewNodes;
 	vector<polygon> Polygons;
-	vector<GVector> Normals;
-	GMatrix rotate;
-	GMatrix vMatrixRotation;	
-	GMatrix nMatrixRotation;
+	vector<Cvector> Normals;
+	Cmatrix rotate;
+	Cmatrix nMatrixRotation;
 
 	void LoadFromFile(char* FileName);
-	void PaintModel(unsigned long* pixels);
-	void FillModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight);
+	void PaintSkeleton(unsigned long* pixels);
+	void PaintModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight);
 	void MoveX(float DeltaMove);
 	void MoveY(float DeltaMove);
 	void MoveZ(float DeltaMove);

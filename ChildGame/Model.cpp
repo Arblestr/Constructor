@@ -5,15 +5,15 @@
 #include "MatrixVector.h"
 
 
-double intencity(double X, double Y, double Z, GVector N, node light)
+double CalculateIntensity(double X, double Y, double Z, Cvector N, node light)
 {
-	GVector D(light.X - X, light.Y - Y, light.Z - Z, 1);
+	Cvector D(light.X - X, light.Y - Y, light.Z - Z, 1);
 	D * (-1);
 	D.normalize();
 	N.normalize();
 	double I;
 	double Iconst = 0.4;
-	double gg = GVector::scalar(N, D);
+	double gg = Cvector::scalar(N, D);
 	double Idiff = 0.4 * max(0, gg);
 	double Iblinn = 0;
 	I = Iconst + Idiff + Iblinn;
@@ -21,16 +21,18 @@ double intencity(double X, double Y, double Z, GVector N, node light)
 }
 
 /////////////
-void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
+void PaintLine(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 {
 	bool step = false;
-	if (abs(x0 - x1) < abs(y0 - y1)) {
+	if (abs(x0 - x1) < abs(y0 - y1)) 
+	{
 		swap(x0, y0);
 		swap(x1, y1);
 		step = true;
 	}
 
-	if (x0 > x1) {
+	if (x0 > x1) 
+	{
 		swap(x0, x1);
 		swap(y0, y1);
 	}
@@ -58,19 +60,19 @@ void line(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 	}
 }
 ////////////////
-void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int height, float* zbuffer, GVector normA, node light)
+void PaintSide(COLORREF color,node A, node B, node C, unsigned long* pixels, int width, int height, float* zbuffer, Cvector normA, node light)
 {
 	if (A.Y == B.Y && A.Y == C.Y) return;
 
 	if (A.Y > B.Y)
-	    std::swap(A, B);
-	if (A.Y > C.Y) 
-	    std::swap(A, C);
-	if (B.Y > C.Y) 
-	    std::swap(B, C);
+		swap(A, B);
+	if (A.Y > C.Y)
+		swap(A, C);
+	if (B.Y > C.Y)
+		swap(B, C);
 
-	if (int(A.Y + .5) == int(B.Y + .5) && B.X < A.X) 
-		std::swap(A, B);
+	if (int(A.Y + .5) == int(B.Y + .5) && B.X < A.X)
+		swap(A, B);
 
 	int x1 = int(A.X + .5);
 	int x2 = int(B.X + .5);
@@ -115,8 +117,8 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 
 	if (dx13 > dx12)
 	{
-		std::swap(dx13, dx12);
-		std::swap(dz13, dz12);
+		swap(dx13, dx12);
+		swap(dz13, dz12);
 	}
 
 	if (y1 == y2)
@@ -129,8 +131,8 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 
 	if (_dx13 < dx23)
 	{
-		std::swap(_dx13, dx23);
-		std::swap(_dz13, dz23);
+		swap(_dx13, dx23);
+		swap(_dz13, dz23);
 	}
 
 	for (int yCoord = y1; yCoord < y3; yCoord++)
@@ -138,7 +140,7 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 		z = wz1;
 
 		if (wx1 != wx2)
-	        dz = (wz2 - wz1) / (double)(wx2 - wx1);
+			dz = (wz2 - wz1) / (double)(wx2 - wx1);
 
 		for (int xCoord = wx1; xCoord < wx2; xCoord++)
 		{
@@ -146,11 +148,9 @@ void fillFaces(node A, node B, node C, unsigned long* pixels, int width, int hei
 			if (pix >= 0 && pix <= width * height)
 				if (zbuffer[pix] < z)
 				{
-					double I = intencity(xCoord, yCoord, z, normA, light);
+					double I = CalculateIntensity(xCoord, yCoord, z, normA, light);
 					zbuffer[pix] = z;
-			     	pixels[pix] = RGB(GetRValue(0x0000ff00) * I,
-						              GetGValue(0x0000ff00) * I, 
-					                  GetBValue(0x0000ff00) * I);
+					pixels[pix] = RGB(GetBValue(color) * I,GetGValue(color) * I,GetRValue(color) * I);
 				}
 			z += dz;
 		}
@@ -177,6 +177,8 @@ Model::Model()
 {
 	this->NodesNum = 0;
 	this->PolygonNum = 0;
+	this->Color = 0x0000ff;
+	this->coeff = 1;
 };
 
 Model::~Model()
@@ -187,10 +189,10 @@ Model::~Model()
 
 void Model::LoadFromFile(char* FileName)
 {
-	this->F = fopen(FileName,"r");
-	if (!(this->F)) 
+	this->F = fopen(FileName, "r");
+	if (!(this->F))
 	{
-		// error
+		
 	}
 	else
 	{
@@ -204,7 +206,7 @@ void Model::ReadNodes()
 {
 	node BufNode;
 	polygon BufPolygon;
-	GVector BufNormal;
+	Cvector BufNormal;
 	double BufNormalX;
 	double BufNormalY;
 	double BufNormalZ;
@@ -213,9 +215,9 @@ void Model::ReadNodes()
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		fscanf_s(this->F, "%f %f %f", &(BufNode.X), &(BufNode.Y), &(BufNode.Z));
-		BufNode.X = BufNode.X*40;
-		BufNode.Y = BufNode.Y*40;
-		BufNode.Z = BufNode.Z*40;
+		BufNode.X = BufNode.X * 40;
+		BufNode.Y = BufNode.Y * 40;
+		BufNode.Z = BufNode.Z * 40;
 		this->Nodes.push_back(BufNode);
 		this->NewNodes.push_back(BufNode);
 	}
@@ -235,8 +237,8 @@ void Model::ReadNodes()
 
 }
 
-void Model::PaintModel(unsigned long* pixels)
-{	
+void Model::PaintSkeleton(unsigned long* pixels)
+{
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
 		int x1 = this->NewNodes[this->Polygons[i].A].X;
@@ -248,30 +250,32 @@ void Model::PaintModel(unsigned long* pixels)
 		int x3 = this->NewNodes[this->Polygons[i].C].X;
 		int y3 = this->NewNodes[this->Polygons[i].C].Y;
 
-		line(x1, y1, x2, y2, pixels, 500);
-		line(x2, y2, x3, y3, pixels, 500);
-		line(x1, y1, x3, y3, pixels, 500);
+		PaintLine(x1, y1, x2, y2, pixels, 500);
+		PaintLine(x2, y2, x3, y3, pixels, 500);
+		PaintLine(x1, y1, x3, y3, pixels, 500);
 
 	}
 }
 
-void Model::FillModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight)
+void Model::PaintModel(unsigned long* pixels, int width, int height, float* zbuffer, node PointOfLight)
 {
 	node A;
 	node B;
 	node C;
-	GVector N;
+	Cvector N;
 
 	for (int i = 0; i < this->PolygonNum; i++)
 	{
 		A = this->NewNodes[this->Polygons[i].A];
-	    B = this->NewNodes[this->Polygons[i].B];
+		B = this->NewNodes[this->Polygons[i].B];
 		C = this->NewNodes[this->Polygons[i].C];
 		N = this->Normals[this->Polygons[i].N];
-		//int kk = this->Polygons[i].N;
-		//double AG = N.length();
-		fillFaces(A, B, C, pixels, width, height, zbuffer, N, PointOfLight);
+
+		PaintSide(this->Color,A, B, C, pixels, width, height, zbuffer, N, PointOfLight);
 	}
+
+	
+	
 }
 
 void Model::MoveX(float DeltaMove)
@@ -302,11 +306,11 @@ void Model::RotateX(float DeltaRotate)
 	for (int i = 0; i < this->NodesNum; i++)
 	{
 		float NewY =
-			         this->Center.Y + (this->Nodes[i].Y - this->Center.Y) * cos(DeltaRotate*M_PI / 180) -
-			         (this->Nodes[i].Z - this->Center.Z) * sin(DeltaRotate*M_PI / 180);
+			this->Center.Y + (this->Nodes[i].Y - this->Center.Y) * cos(DeltaRotate*M_PI / 180) -
+			(this->Nodes[i].Z - this->Center.Z) * sin(DeltaRotate*M_PI / 180);
 
 		float NewZ = this->Center.Z + (this->Nodes[i].Y - this->Center.Y) * sin(DeltaRotate*M_PI / 180) +
-			         (this->Nodes[i].Z - this->Center.Z) * cos(DeltaRotate*M_PI / 180);
+			(this->Nodes[i].Z - this->Center.Z) * cos(DeltaRotate*M_PI / 180);
 
 		this->Nodes[i].Y = NewY;
 		this->Nodes[i].Z = NewZ;
@@ -367,12 +371,10 @@ void Model::initModification(node* Center)
 	//this->Center.X = Center->X;
 	//this->Center.Y = Center->Y;
 	//this->Center.Z = Center->Z;
-	GMatrix moveToOrigin = matrixMove(-this->Center.X, -this->Center.Y, -this->Center.Z);
-	GMatrix moveBack = matrixMove(this->Center.X, this->Center.Y, this->Center.Z);
+	Cmatrix moveToOrigin = matrixMove(-this->Center.X, -this->Center.Y, -this->Center.Z);
+	Cmatrix moveBack = matrixMove(this->Center.X, this->Center.Y, this->Center.Z);
 
-	this->vMatrixRotation = moveToOrigin * rotate * moveBack;
-
-	this->nMatrixRotation = this->vMatrixRotation;
+	this->nMatrixRotation = moveToOrigin * rotate * moveBack;
 	this->nMatrixRotation.transposition();
 	this->nMatrixRotation.inverse();
 }
@@ -386,5 +388,3 @@ void Model::ClearModel()
 	this->NodesNum = 0;
 	this->Normals.clear();
 }
-
-

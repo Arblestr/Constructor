@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MatrixVector.h"
 
-GVector::GVector()
+Cvector::Cvector()
 {
 	for (int i = 0; i <= 3; i++)
 	{
@@ -9,7 +9,7 @@ GVector::GVector()
 	}
 }
 
-GVector::GVector(double X, double Y, double Z, double hc)
+Cvector::Cvector(double X, double Y, double Z, double hc)
 {
 	this->vec.push_back(X);
 	this->vec.push_back(Y);
@@ -17,85 +17,85 @@ GVector::GVector(double X, double Y, double Z, double hc)
 	this->vec.push_back(hc);
 }
 
-GVector::GVector(const GVector& other)
+Cvector::Cvector(const Cvector& other)
 {
 	this->vec = other.getVec();
 }
 
-GVector::GVector(GVector&& other)
+Cvector::Cvector(Cvector&& other)
 {
 	this->vec = other.getVec();
 }
 
-GVector::~GVector()
+Cvector::~Cvector()
 {
 	this->vec.clear();
 }
 
-GVector& GVector::operator=(GVector other)
+Cvector& Cvector::operator=(Cvector other)
 {
 	this->vec = other.getVec();
 	return *this;
 }
 
-GVector GVector::operator+(const GVector other)
+Cvector Cvector::operator+(const Cvector other)
 {
-	GVector result;
+	Cvector result;
 	result[0] = (*this)[0] + other[0];
 	result[1] = (*this)[1] + other[1];
 	result[2] = (*this)[2] + other[2];
-	result[3] = (*this)[3];
+	result[3] = (*this)[3] + other[3];
 	return result;
 }
 
-GVector GVector::operator-(const GVector other)
+Cvector Cvector::operator-(const Cvector other)
 {
-	GVector result;
+	Cvector result;
 	result[0] = (*this)[0] - other[0];
 	result[1] = (*this)[1] - other[1];
 	result[2] = (*this)[2] - other[2];
-	result[3] = (*this)[3];
+	result[3] = (*this)[3] - other[3];
 	return result;
 }
 
-GVector GVector::operator/(const double value)
+Cvector Cvector::operator/(const double value)
 {
-	GVector result;
+	Cvector result;
 	result[0] = (*this)[0] / value;
 	result[1] = (*this)[1] / value;
 	result[2] = (*this)[2] / value;
-	result[3] = (*this)[3];
+	result[3] = (*this)[3] / value;
 	return result;
 }
 
-GVector GVector::operator*(const double value)
+Cvector Cvector::operator*(const double value)
 {
-	GVector result;
+	Cvector result;
 	result[0] = (*this)[0] * value;
 	result[1] = (*this)[1] * value;
 	result[2] = (*this)[2] * value;
-	result[3] = (*this)[3];
+	result[3] = (*this)[3] * value;
 	return result;
 }
 
-double& GVector::operator[](const size_t index)
+double& Cvector::operator[](const size_t index)
 {
 	
 	return this->vec[index];
 }
 
-const double& GVector::operator[](const size_t index) const
+const double& Cvector::operator[](const size_t index) const
 {
 	
 	return this->vec[index];
 }
 
-vector<double> GVector::getVec() const
+vector<double> Cvector::getVec() const
 {
 	return this->vec;
 }
 
-double GVector::length()
+double Cvector::length()
 {
 	double X = (*this)[0];
 	double Y = (*this)[1];
@@ -104,7 +104,7 @@ double GVector::length()
 	return sqrt(X * X + Y * Y + Z * Z);
 }
 
-GVector GVector::normalize()
+Cvector Cvector::normalize()
 {
 	double length = (*this).length();
 	if (length == 0)
@@ -121,23 +121,23 @@ GVector GVector::normalize()
 	return *this;
 }
 
-GVector GVector::cross(GVector first, GVector second)
+Cvector Cvector::cross(Cvector first, Cvector second)
 {
-	GVector result;
+	Cvector result;
 	result[0] = first[1] * second[2] - first[2] * second[1]; // new X = Y1 * Z2 - Z1 * Y2
 	result[1] = first[2] * second[0] - first[0] * second[2]; // new Y = Z1 * X2 - X1 * Z2
 	result[2] = first[0] * second[1] - first[1] * second[0]; // new Z = X1 * Y2 - Y1 * X2
-	result[3] = 1;
+	result[3] = 0;
 
 	return result;
 }
 
-double GVector::scalar(GVector first, GVector second)
+double Cvector::scalar(Cvector first, Cvector second)
 {
 	return first[0] * second[0] + first[1] * second[1] + first[2] * second[2];
 }
 
-double GVector::angle(GVector first, GVector second)
+double Cvector::angle(Cvector first, Cvector second)
 {
 	double angle = acos(scalar(first, second) / (first.length() * second.length()));
 	angle *= 180 / M_PI;
@@ -150,9 +150,9 @@ double GVector::angle(GVector first, GVector second)
 	return angle;
 }
 
-GVector GVector::operator*(GMatrix matrix)
+Cvector Cvector::operator*(Cmatrix matrix)
 {
-	GVector result;
+	Cvector result;
 	for (size_t i = 0; i <= 3; i++)
 	{
 		for (size_t j = 0; j <= 3; j++)
@@ -163,7 +163,7 @@ GVector GVector::operator*(GMatrix matrix)
 	return result;
 }
 
-bool GVector::operator==(const GVector& other) const
+bool Cvector::operator==(const Cvector& other) const
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -175,7 +175,7 @@ bool GVector::operator==(const GVector& other) const
 	return true;
 }
 
-bool GVector::operator!=(const GVector& other) const
+bool Cvector::operator!=(const Cvector& other) const
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -189,16 +189,16 @@ bool GVector::operator!=(const GVector& other) const
 
 //////
 
-GMatrix::GMatrix()
+Cmatrix::Cmatrix()
 {
 	for (size_t i = 0; i <= 3; i++)
 	{
-		GVector tmp;
+		Cvector tmp;
 		this->matrix.push_back(tmp);
 	}
 }
 
-GMatrix::GMatrix(const GMatrix& other)
+Cmatrix::Cmatrix(const Cmatrix& other)
 {
 	for (size_t i = 0; i <= 3; i++)
 	{
@@ -206,7 +206,7 @@ GMatrix::GMatrix(const GMatrix& other)
 	}
 }
 
-GMatrix::GMatrix(GMatrix&& other)
+Cmatrix::Cmatrix(Cmatrix&& other)
 {
 	for (size_t i = 0; i <= 3; i++)
 	{
@@ -214,12 +214,12 @@ GMatrix::GMatrix(GMatrix&& other)
 	}
 }
 
-GMatrix::~GMatrix()
+Cmatrix::~Cmatrix()
 {
 	this->matrix.clear();
 }
 
-GMatrix& GMatrix::operator=(GMatrix other)
+Cmatrix& Cmatrix::operator=(Cmatrix other)
 {
 	this->matrix.clear();
 	for (size_t i = 0; i <= 3; i++)
@@ -230,26 +230,26 @@ GMatrix& GMatrix::operator=(GMatrix other)
 	return (*this);
 }
 
-GVector& GMatrix::operator[](const unsigned long index)
+Cvector& Cmatrix::operator[](const unsigned long index)
 {
 	return this->matrix[index];
 }
 
-const GVector& GMatrix::operator[](const unsigned long index) const
+const Cvector& Cmatrix::operator[](const unsigned long index) const
 {
 	return this->matrix[index];
 }
 
-GMatrix GMatrix::operator-()
+Cmatrix Cmatrix::operator-()
 {
-	GMatrix result(*this);
+	Cmatrix result(*this);
 	result = result * (-1);
 	return result;;
 }
 
-GMatrix GMatrix::operator*(const double value)
+Cmatrix Cmatrix::operator*(const double value)
 {
-	GMatrix result(*this);
+	Cmatrix result(*this);
 
 	for (size_t i = 0; i <= 3; i++)
 	{
@@ -261,16 +261,16 @@ GMatrix GMatrix::operator*(const double value)
 	return result;
 }
 
-GMatrix GMatrix::operator*(const GMatrix& other)
+Cmatrix Cmatrix::operator*(const Cmatrix& other)
 {
-	GMatrix result(*this);
+	Cmatrix result(*this);
 
 	for (size_t i = 0; i <= 3; i++)
 	{
-		GVector row((*this)[i]);
+		Cvector row((*this)[i]);
 		for (size_t j = 0; j <= 3; j++)
 		{
-			GVector column(other[0][j], other[1][j], other[2][j], other[3][j]);
+			Cvector column(other[0][j], other[1][j], other[2][j], other[3][j]);
 			double sum = 0;
 			for (size_t k = 0; k <= 3; k++)
 				sum += row[k] * column[k];
@@ -280,9 +280,9 @@ GMatrix GMatrix::operator*(const GMatrix& other)
 	return result;
 }
 
-bool GMatrix::inverse()
+bool Cmatrix::inverse()
 {
-	GMatrix result;
+	Cmatrix result;
 
 	for (int i = 0; i <= 3; ++i)
 	{
@@ -293,7 +293,7 @@ bool GMatrix::inverse()
 	}
 
 
-	GMatrix tmp(*this);
+	Cmatrix tmp(*this);
 
 	for (int k = 0; k <= 3; ++k)
 	{
@@ -355,9 +355,9 @@ bool GMatrix::inverse()
 	return true;
 }
 
-GMatrix GMatrix::transposition()
+Cmatrix Cmatrix::transposition()
 {
-	GMatrix result;
+	Cmatrix result;
 	for (int i = 0; i <= 3; i++)
 	{
 		for (int j = 0; j <= 3; j++)
@@ -369,12 +369,12 @@ GMatrix GMatrix::transposition()
 	return *this;
 }
 
-GMatrix matrixrotationX(double angle)
+Cmatrix matrixrotationY(double angle)
 {
 	double cosa = cos(angle);
 	double sina = sin(angle);
 
-	GMatrix transform;
+	Cmatrix transform;
 
 	transform[0][0] = cosa;
 	transform[0][1] = 0;
@@ -399,12 +399,12 @@ GMatrix matrixrotationX(double angle)
 	return transform;
 }
 
-GMatrix matrixrotationY(double angle)
+Cmatrix matrixrotationX(double angle)
 {
 	double cosa = cos(angle);
 	double sina = sin(angle);
 
-	GMatrix transform;
+	Cmatrix transform;
 
 	transform[0][0] = 1;
 	transform[0][1] = 0;
@@ -413,11 +413,11 @@ GMatrix matrixrotationY(double angle)
 
 	transform[1][0] = 0;
 	transform[1][1] = cosa;
-	transform[1][2] = -sina;
+	transform[1][2] = sina;
 	transform[1][3] = 0;
 
 	transform[2][0] = 0;
-	transform[2][1] = sina;
+	transform[2][1] = -sina;
 	transform[2][2] = cosa;
 	transform[2][3] = 0;
 
@@ -429,19 +429,19 @@ GMatrix matrixrotationY(double angle)
 	return transform;
 }
 
-GMatrix matrixrotationZ(double angle)
+Cmatrix matrixrotationZ(double angle)
 {
 	double cosa = cos(angle);
 	double sina = sin(angle);
 
-	GMatrix transform;
+	Cmatrix transform;
 
 	transform[0][0] = cosa;
-	transform[0][1] = -sina;
+	transform[0][1] = sina;
 	transform[0][2] = 0;
 	transform[0][3] = 0;
 
-	transform[1][0] = sina;
+	transform[1][0] = -sina;
 	transform[1][1] = cosa;
 	transform[1][2] = 0;
 	transform[1][3] = 0;
@@ -459,9 +459,9 @@ GMatrix matrixrotationZ(double angle)
 	return transform;
 }
 
-GMatrix matrixMove(double X, double Y, double Z)
+Cmatrix matrixMove(double X, double Y, double Z)
 {
-	GMatrix transform;
+	Cmatrix transform;
 
 	transform[0][0] = 1;
 	transform[0][1] = 0;

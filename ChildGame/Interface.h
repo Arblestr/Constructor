@@ -56,6 +56,9 @@ public:
 	vector<Model> MyModels;
 	Camera* cam;
 	node PointOfLight;
+	node camPointOfLight;
+
+	COLORREF color;
 private:
 	void InitBitmap();
 

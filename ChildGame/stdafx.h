@@ -53,5 +53,11 @@
 #define ID_BCamRotVerU 3481
 #define ID_BCamRotVerD 3482
 
+#define ID_BColModel 3483
+#define ID_BColGround 3484
+
+#define ID_BCoeff 3485
+
+#define ID_BDel 3486
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
