@@ -99,12 +99,12 @@ Camera::Camera(Cvector position, Cvector target)
 	this->right[0] = 1;
 	this->right[1] = 0;
 	this->right[2] = 0;
-	this->right[3] = 1;
+	this->right[3] = 0;
 
 	this->up[0] = 0;
 	this->up[1] = 1;
 	this->up[2] = 0;
-	this->up[3] = 1;
+	this->up[3] = 0;
 
 	this->direction = this->position - this->target;
 }
@@ -114,12 +114,10 @@ void Camera::rotateVerticalSphere(double angle)
 	Cmatrix rotation = matrixrotation(this->right[0], this->right[1], this->right[2], angle);
 	this->up = this->up * rotation;
 	this->direction = this->direction * rotation;
-	Cmatrix movement = matrixmovement(this->target[0], this->target[1], this->target[2]);
-	this->position = this->position * (-movement) * rotation * movement;
 
-	//Cmatrix movementtoorigin = matrixmovement(this->target[0], this->target[1], this->target[2]);
-	//Cmatrix movementback = matrixmovement(-this->target[0], -this->target[1], -this->target[2]);
-	//this->position = this->position * movementback * rotation * movementtoorigin;
+	Cmatrix movementtoorigin = matrixmovement(this->target[0], this->target[1], this->target[2]);
+	Cmatrix movementback = matrixmovement(-this->target[0], -this->target[1], -this->target[2]);
+	this->position = this->position * movementback * rotation * movementtoorigin;
 }
 
 void Camera::rotateHorizontalSphere(double angle)
@@ -127,12 +125,10 @@ void Camera::rotateHorizontalSphere(double angle)
 	Cmatrix rotation = matrixrotation(this->up[0], this->up[1], this->up[2], angle);
 	this->right = this->right * rotation;
 	this->direction = this->direction * rotation;
-	Cmatrix movement = matrixmovement(this->target[0], this->target[1], this->target[2]);
-	this->position = this->position * (-movement) * rotation * movement;
 
-	//Cmatrix movementtoorigin = matrixmovement(this->target[0], this->target[1], this->target[2]);
-	//Cmatrix movementback = matrixmovement(-this->target[0], -this->target[1], -this->target[2]);
-	//this->position = this->position * movementback * rotation * movementtoorigin;
+	Cmatrix movementtoorigin = matrixmovement(this->target[0], this->target[1], this->target[2]);
+	Cmatrix movementback = matrixmovement(-this->target[0], -this->target[1], -this->target[2]);
+	this->position = this->position * movementback * rotation * movementtoorigin;
 }
 
 Cmatrix Camera::cameraview()

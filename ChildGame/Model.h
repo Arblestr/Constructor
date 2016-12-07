@@ -40,6 +40,7 @@ public:
 	vector<node> NewNodes;
 	vector<polygon> Polygons;
 	vector<Cvector> Normals;
+	vector<Cvector> sNormals;
 	Cmatrix rotate;
 	Cmatrix nMatrixRotation;
 
@@ -54,5 +55,6 @@ public:
 	void RotateZ(float DeltaRotate);
 	void initModification(node* Center);
 	void ClearModel();
+	int PolygonCompare(node A1, node A2, node A3, node B1, node B2, node B3);
 };
 

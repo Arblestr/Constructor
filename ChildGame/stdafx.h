@@ -20,6 +20,12 @@
 #include <tchar.h>
 #include "stdio.h"
 
+#include <ShlObj.h>
+#pragma comment(lib, "Comctl32.lib")
+#pragma comment(linker, "\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #define ID_BMXp 3456
 #define ID_BMXm 3457
 #define ID_BMYp 3458
@@ -59,5 +65,10 @@
 #define ID_BCoeff 3485
 
 #define ID_BDel 3486
+
+#define ID_Xcam 3487
+#define ID_Ycam 3488
+#define ID_Zcam 3489
+#define ID_BLight 3490
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы

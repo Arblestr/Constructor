@@ -33,7 +33,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Label LabStep(TEXT("Step"), 10, 100, 25, 80);
 		Edit EdStep(TEXT(""), 100, 100, 25, 80, ID_Step);
-		SetDlgItemText(hWnd, ID_Step, L"40");
+		SetDlgItemText(hWnd, ID_Step, L"10");
 
 		Button ButMoveXp(TEXT("Move OX+"), 10, 140, 25, 80, ID_BMXp);
 		Button ButMoveXm(TEXT("Move OX-"), 100, 140, 25, 80, ID_BMXm);
@@ -68,9 +68,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Label LabCamera(TEXT("Camera options"), 755, 10, 25, 120);
 
-		Button ButClear(TEXT("Clear"), 780, 350, 25, 80, ID_BClear);
-		Button ButSave(TEXT("Save"), 780, 400, 25, 80, ID_BSave);
-		Button ButLoad(TEXT("Load"), 780, 450, 25, 80, ID_BLoad);
+		Button ButClear(TEXT("Clear"), 780, 380, 25, 80, ID_BClear);
+		Button ButSave(TEXT("Save"), 780, 420, 25, 80, ID_BSave);
+		Button ButLoad(TEXT("Load"), 780, 460, 25, 80, ID_BLoad);
 		Button ButDel(TEXT("Delete"), 780, 500, 25, 80, ID_BDel);
 
 		Button ButCube(TEXT("Cube"), 200, 505, 25, 80, ID_BCube);
@@ -78,16 +78,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Button ButLine(TEXT("line"), 360, 505, 25, 80, ID_BLine);
 		Button Buttblock(TEXT("T-Block"), 440, 505, 25, 80, ID_Btblock);
 
-		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 70, 25, 105, ID_BCamRotHorL);
-		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 70, 25, 105, ID_BCamRotHorR);
-		Button ButCamRotateVerU(TEXT("Rotate Up"), 705, 120, 25, 105, ID_BCamRotVerU);
-		Button ButCamRotateVerD(TEXT("Rotate Down"), 820, 120, 25, 105, ID_BCamRotVerD);
+		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 60, 25, 105, ID_BCamRotHorL);
+		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 60, 25, 105, ID_BCamRotHorR);
+		Button ButCamRotateVerU(TEXT("Rotate Up"), 705, 110, 25, 105, ID_BCamRotVerU);
+		Button ButCamRotateVerD(TEXT("Rotate Down"), 820, 110, 25, 105, ID_BCamRotVerD);
 
-		Label LabColors(TEXT("Colors"), 755, 180, 25, 125);
-		Button ButColModel(TEXT("Model Color"), 755, 220, 25, 125, ID_BColModel);
-		Button ButColGround(TEXT("Background Color"), 755, 260, 25, 125, ID_BColGround);
+		Label LabColors(TEXT("Colors"), 755, 250, 25, 125);
+		Button ButColModel(TEXT("Model Color"), 755, 290, 25, 125, ID_BColModel);
+		Button ButColGround(TEXT("Background Color"), 755, 330, 25, 125, ID_BColGround);
 
-		
+		Label LabLightCoords(TEXT("Sun coordinates"), 755, 150, 25, 125);
+		Edit EdXcam(TEXT(""), 755, 180, 25, 35, ID_Xcam);
+		SetDlgItemText(hWnd, ID_Xcam, L"0");
+		Edit EdYcam(TEXT(""), 800, 180, 25, 35, ID_Ycam);
+		SetDlgItemText(hWnd, ID_Ycam, L"0");
+		Edit EdZcam(TEXT(""), 845, 180, 25, 35, ID_Zcam);
+		SetDlgItemText(hWnd, ID_Zcam, L"50");
+		Button ButLight(TEXT("OK"), 800, 210, 25, 35, ID_BLight);
+
 	}
 	break;
 	//case WM_KEYDOWN:
@@ -100,57 +108,359 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BMXp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveX(DeltaMove);
-				MyScene.DrawScene();
+				
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.X += DeltaMove;
+								B.X += DeltaMove;
+								C.X += DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveX(DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BMXm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveX(-DeltaMove);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.X += -DeltaMove;
+								B.X += -DeltaMove;
+								C.X += -DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveX(-DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BMYp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveY(-DeltaMove);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.Y += -DeltaMove;
+								B.Y += -DeltaMove;
+								C.Y += -DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveY(-DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BMYm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveY(DeltaMove);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.Y += DeltaMove;
+								B.Y += DeltaMove;
+								C.Y += DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveY(DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BMZp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveZ(-DeltaMove);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.Z += -DeltaMove;
+								B.Z += -DeltaMove;
+								C.Z += -DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveZ(-DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BMZm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].MoveZ(DeltaMove);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.Z += DeltaMove;
+								B.Z += DeltaMove;
+								C.Z += DeltaMove;
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].MoveZ(DeltaMove);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRXp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateX(DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								
+								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180) -	
+										(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewAZ = MyScene.MyModels[ModelNum].Center.Z + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180) +
+										(A.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								A.Y = NewAY;
+								A.Z = NewAZ;
+
+								float NewBY = MyScene.MyModels[ModelNum].Center.Y + (B.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180) -	
+										(B.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewBZ = MyScene.MyModels[ModelNum].Center.Z + (B.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180) +
+										(B.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								B.Y = NewBY;
+								B.Z = NewBZ;
+
+								float NewCY = MyScene.MyModels[ModelNum].Center.Y + (C.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180) -
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewCZ = MyScene.MyModels[ModelNum].Center.Z + (C.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180) +
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								C.Y = NewCY;
+								C.Z = NewCZ;
+								
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateX(DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRYp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateY(DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+
+								float NewAX = MyScene.MyModels[ModelNum].Center.X + (A.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewAZ = MyScene.MyModels[ModelNum].Center.Z + (A.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								A.X = NewAX;
+								A.Z = NewAZ;
+
+								float NewBX = MyScene.MyModels[ModelNum].Center.X + (B.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewBZ = MyScene.MyModels[ModelNum].Center.Z + (B.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								B.X = NewBX;
+								B.Z = NewBZ;
+
+								float NewCX = MyScene.MyModels[ModelNum].Center.X + (C.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
+
+								float NewCZ = MyScene.MyModels[ModelNum].Center.Z + (C.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(DeltaRotate*M_PI / 180);
+
+								C.X = NewCX;
+								C.Z = NewCZ;
+
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateY(DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRZp:
@@ -163,8 +473,64 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BRXm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateX(-DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+
+								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180) -
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewAZ = MyScene.MyModels[ModelNum].Center.Z + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180) +
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								A.Y = NewAY;
+								A.Z = NewAZ;
+
+								float NewBY = MyScene.MyModels[ModelNum].Center.Y + (B.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180) -
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewBZ = MyScene.MyModels[ModelNum].Center.Z + (B.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180) +
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								B.Y = NewBY;
+								B.Z = NewBZ;
+
+								float NewCY = MyScene.MyModels[ModelNum].Center.Y + (C.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180) -
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewCZ = MyScene.MyModels[ModelNum].Center.Z + (C.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180) +
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								C.Y = NewCY;
+								C.Z = NewCZ;
+
+
+								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateX(-DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRYm:
@@ -251,13 +617,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_BCoeff:
 		{
-			for (int i = 0; i < MyScene.MyModels[ModelNum].NodesNum; i++)
+
+			int k;
+			int flag = 0;
+			node A, B, C, D, E, F;
+			for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
 			{
-				MyScene.MyModels[ModelNum].Nodes[i].X *= DeltaCoeff;
-				MyScene.MyModels[ModelNum].Nodes[i].Y *= DeltaCoeff;
-				MyScene.MyModels[ModelNum].Nodes[i].Z *= DeltaCoeff;
+				if (m != ModelNum)
+					for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+						for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+						{
+							A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+							B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+							C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+							A.X *= DeltaCoeff;
+							B.X *= DeltaCoeff;
+							C.X *= DeltaCoeff;
+							A.Y *= DeltaCoeff;
+							B.Y *= DeltaCoeff;
+							C.Y *= DeltaCoeff;
+							A.Z *= DeltaCoeff;
+							B.Z *= DeltaCoeff;
+							C.Z *= DeltaCoeff;
+
+							D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
+							E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
+							F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+
+							k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+							if (k == 1)
+							{
+								flag = 1;
+								break;
+							}
+						}
 			}
-			MyScene.DrawScene();
+			if (flag == 0)
+			{
+				for (int i = 0; i < MyScene.MyModels[ModelNum].NodesNum; i++)
+				{
+					MyScene.MyModels[ModelNum].Nodes[i].X *= DeltaCoeff;
+					MyScene.MyModels[ModelNum].Nodes[i].Y *= DeltaCoeff;
+					MyScene.MyModels[ModelNum].Nodes[i].Z *= DeltaCoeff;
+				}
+				MyScene.DrawScene();
+			}
 		}
 		break;
 		case ID_BCube:
@@ -356,6 +760,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BDel:
 		{
 			MyScene.MyModels.erase(MyScene.MyModels.begin()+ModelNum);
+			MyScene.DrawScene();
+		}
+		break;
+
+		case ID_Xcam:
+			if (HIWORD(wParam) == EN_CHANGE)
+			{
+				TCHAR Buf[4];
+				HWND Edit = GetDlgItem(hWnd, ID_Xcam);
+				GetWindowText(Edit, Buf, 4);
+					MyScene.PointOfLight.X = _wtof(Buf);
+			}
+			break;
+		case ID_Ycam:
+			if (HIWORD(wParam) == EN_CHANGE)
+			{
+				TCHAR Buf[4];
+				HWND Edit = GetDlgItem(hWnd, ID_Ycam);
+				GetWindowText(Edit, Buf, 4);
+					MyScene.PointOfLight.Y = -_wtof(Buf);
+				
+			}
+			break;
+
+		case ID_Zcam:
+			if (HIWORD(wParam) == EN_CHANGE)
+			{
+				TCHAR Buf[4];
+				HWND Edit = GetDlgItem(hWnd, ID_Zcam);
+				GetWindowText(Edit, Buf, 4);
+				MyScene.PointOfLight.Z = -_wtof(Buf);
+			}
+			break;
+
+		case ID_BLight:
+		{
 			MyScene.DrawScene();
 		}
 		break;

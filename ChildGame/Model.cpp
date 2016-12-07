@@ -3,7 +3,20 @@
 #include "Model.h"
 #include <algorithm>
 #include "MatrixVector.h"
+#include "triangles.h"
 
+int Model:: PolygonCompare(node A1, node A2, node A3, node B1, node B2, node B3)
+{
+	float V0[3], V1[3], V2[3];
+	V0[0] = A1.X; V0[1] = A1.Y; V0[2] = A1.Z;
+	V1[0] = A2.X; V1[1] = A2.Y; V1[2] = A2.Z;
+	V2[0] = A3.X; V2[1] = A3.Y; V2[2] = A3.Z;
+	float U0[3], U1[3], U2[3];
+	U0[0] = B1.X; U0[1] = B1.Y; U0[2] = B1.Z;
+	U1[0] = B2.X; U1[1] = B2.Y; U1[2] = B2.Z;
+	U2[0] = B3.X; U2[1] = B3.Y; U2[2] = B3.Z;
+	return tri_tri_intersect(V0, V1, V2, U0, U1, U2);
+}
 
 double CalculateIntensity(double X, double Y, double Z, Cvector N, node light)
 {
@@ -20,7 +33,7 @@ double CalculateIntensity(double X, double Y, double Z, Cvector N, node light)
 	return I;
 }
 
-/////////////
+////////////////
 void PaintLine(int x0, int y0, int x1, int y1, unsigned long* pixels, int width)
 {
 	bool step = false;
@@ -145,6 +158,8 @@ void PaintSide(COLORREF color,node A, node B, node C, unsigned long* pixels, int
 		for (int xCoord = wx1; xCoord < wx2; xCoord++)
 		{
 			int pix = yCoord * width + xCoord;
+			if (xCoord < 0 || xCoord > width || yCoord < 0 || yCoord > height)
+				return;
 			if (pix >= 0 && pix <= width * height)
 				if (zbuffer[pix] < z)
 				{
@@ -170,7 +185,6 @@ void PaintSide(COLORREF color,node A, node B, node C, unsigned long* pixels, int
 		}
 	}
 }
-
 ////////////////
 
 Model::Model()
@@ -232,6 +246,7 @@ void Model::ReadNodes()
 	{
 		fscanf_s(this->F, "%lf %lf %lf", &(BufNormal[0]), &(BufNormal[1]), &(BufNormal[2]));
 		this->Normals.push_back(BufNormal);
+		this->sNormals.push_back(BufNormal);
 	}
 	fscanf_s(this->F, "%f %f %f", &(this->Center.X), &(this->Center.Y), &(this->Center.Z));
 
@@ -269,13 +284,10 @@ void Model::PaintModel(unsigned long* pixels, int width, int height, float* zbuf
 		A = this->NewNodes[this->Polygons[i].A];
 		B = this->NewNodes[this->Polygons[i].B];
 		C = this->NewNodes[this->Polygons[i].C];
-		N = this->Normals[this->Polygons[i].N];
+		N = this->sNormals[this->Polygons[i].N];
 
 		PaintSide(this->Color,A, B, C, pixels, width, height, zbuffer, N, PointOfLight);
-	}
-
-	
-	
+	}		
 }
 
 void Model::MoveX(float DeltaMove)
