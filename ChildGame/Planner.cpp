@@ -106,7 +106,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case ID_BMXp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				
 				int k;
@@ -146,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BMXm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -184,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BMYp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -222,7 +222,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BMYm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -260,7 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BMZp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -298,7 +298,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BMZm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -336,7 +336,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRXp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -400,7 +400,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRYp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -464,7 +464,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRZp:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -526,7 +526,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRXm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -589,7 +589,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRYm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -652,7 +652,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_BRZm:
-			if (ModelNum <= MyScene.MyModels.size() - 1)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
 				int k;
 				int flag = 0;
@@ -783,50 +783,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_BCoeff:
 		{
-
-			int k;
-			int flag = 0;
-			node A, B, C, D, E, F;
-			for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
 			{
-				if (m != ModelNum)
-					for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
-						for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
-						{
-							A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-							B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-							C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
-							A.X *= DeltaCoeff;
-							B.X *= DeltaCoeff;
-							C.X *= DeltaCoeff;
-							A.Y *= DeltaCoeff;
-							B.Y *= DeltaCoeff;
-							C.Y *= DeltaCoeff;
-							A.Z *= DeltaCoeff;
-							B.Z *= DeltaCoeff;
-							C.Z *= DeltaCoeff;
-
-							D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
-							E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
-							F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
-
-							k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
-							if (k == 1)
-							{
-								flag = 1;
-								break;
-							}
-						}
-			}
-			if (flag == 0)
-			{
-				for (int i = 0; i < MyScene.MyModels[ModelNum].NodesNum; i++)
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
 				{
-					MyScene.MyModels[ModelNum].Nodes[i].X *= DeltaCoeff;
-					MyScene.MyModels[ModelNum].Nodes[i].Y *= DeltaCoeff;
-					MyScene.MyModels[ModelNum].Nodes[i].Z *= DeltaCoeff;
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A.X *= DeltaCoeff;
+								B.X *= DeltaCoeff;
+								C.X *= DeltaCoeff;
+								A.Y *= DeltaCoeff;
+								B.Y *= DeltaCoeff;
+								C.Y *= DeltaCoeff;
+								A.Z *= DeltaCoeff;
+								B.Z *= DeltaCoeff;
+								C.Z *= DeltaCoeff;
+
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
 				}
-				MyScene.DrawScene();
+				if (flag == 0)
+				{
+					for (int i = 0; i < MyScene.MyModels[ModelNum].NodesNum; i++)
+					{
+						MyScene.MyModels[ModelNum].Nodes[i].X *= DeltaCoeff;
+						MyScene.MyModels[ModelNum].Nodes[i].Y *= DeltaCoeff;
+						MyScene.MyModels[ModelNum].Nodes[i].Z *= DeltaCoeff;
+					}
+					MyScene.DrawScene();
+				}
 			}
 		}
 		break;
@@ -899,8 +901,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			but_color.rgbResult = RGB(255, 0, 0);
 			if (ChooseColor(&but_color))
 			{
-				MyScene.MyModels[ModelNum].Color = (COLORREF)but_color.rgbResult;
-				MyScene.DrawScene();
+				if (ModelNum <= MyScene.MyModels.size() - 1  && MyScene.MyModels.size() != 0)
+				{
+					MyScene.MyModels[ModelNum].Color = (COLORREF)but_color.rgbResult;
+					MyScene.DrawScene();
+				}
 			}
 		}
 		break;
@@ -925,8 +930,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case ID_BDel:
 		{
-			MyScene.MyModels.erase(MyScene.MyModels.begin()+ModelNum);
-			MyScene.DrawScene();
+			if (ModelNum <= MyScene.MyModels.size() - 1 && MyScene.MyModels.size() != 0)
+			{
+				MyScene.MyModels.erase(MyScene.MyModels.begin() + ModelNum);
+				MyScene.DrawScene();
+			}
 		}
 		break;
 
