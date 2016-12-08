@@ -118,16 +118,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.X += DeltaMove;
 								B.X += DeltaMove;
 								C.X += DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -157,16 +157,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.X += -DeltaMove;
 								B.X += -DeltaMove;
 								C.X += -DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -195,16 +195,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.Y += -DeltaMove;
 								B.Y += -DeltaMove;
 								C.Y += -DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -233,16 +233,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.Y += DeltaMove;
 								B.Y += DeltaMove;
 								C.Y += DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -271,16 +271,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.Z += -DeltaMove;
 								B.Z += -DeltaMove;
 								C.Z += -DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -309,16 +309,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								A.Z += DeltaMove;
 								B.Z += DeltaMove;
 								C.Z += DeltaMove;
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -347,9 +347,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 								
 								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180) -	
 										(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
@@ -379,9 +379,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								C.Z = NewCZ;
 								
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -411,9 +411,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 
 								float NewAX = MyScene.MyModels[ModelNum].Center.X + (A.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
 									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(DeltaRotate*M_PI / 180);
@@ -443,9 +443,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								C.Z = NewCZ;
 
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -466,8 +466,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BRZp:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateZ(DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+
+								float NewAX = MyScene.MyModels[ModelNum].Center.X + (A.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(A.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180);
+
+								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180);
+
+								A.X = NewAX;
+								A.Y = NewAY;
+
+								float NewBX = MyScene.MyModels[ModelNum].Center.X + (B.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(B.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180);
+
+								float NewBY = MyScene.MyModels[ModelNum].Center.Y + (B.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(B.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180);
+
+								B.X = NewBX;
+								B.Y = NewBY;
+
+								float NewCX = MyScene.MyModels[ModelNum].Center.X + (C.X - MyScene.MyModels[ModelNum].Center.X) * cos(DeltaRotate*M_PI / 180) -
+									(C.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(DeltaRotate*M_PI / 180);
+
+								float NewCY = MyScene.MyModels[ModelNum].Center.Y + (C.X - MyScene.MyModels[ModelNum].Center.X) * sin(DeltaRotate*M_PI / 180) +
+									(C.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(DeltaRotate*M_PI / 180);
+
+								C.X = NewCX;
+								C.Y = NewCY;
+
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateZ(DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRXm:
@@ -482,9 +537,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 							{
-								A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-								B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-								C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 
 								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180) -
 									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
@@ -514,9 +569,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								C.Z = NewCZ;
 
 
-								D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-								E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-								F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 								if (k == 1)
@@ -536,15 +591,126 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BRYm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateY(-DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+
+								float NewAX = MyScene.MyModels[ModelNum].Center.X + (A.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewAZ = MyScene.MyModels[ModelNum].Center.Z + (A.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(A.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								A.X = NewAX;
+								A.Z = NewAZ;
+
+								float NewBX = MyScene.MyModels[ModelNum].Center.X + (B.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewBZ = MyScene.MyModels[ModelNum].Center.Z + (B.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(B.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								B.X = NewBX;
+								B.Z = NewBZ;
+
+								float NewCX = MyScene.MyModels[ModelNum].Center.X + (C.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewCZ = MyScene.MyModels[ModelNum].Center.Z + (C.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(C.Z - MyScene.MyModels[ModelNum].Center.Z) * cos(-DeltaRotate*M_PI / 180);
+
+								C.X = NewCX;
+								C.Z = NewCZ;
+
+
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateY(-DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BRZm:
 			if (ModelNum <= MyScene.MyModels.size() - 1)
 			{
-				MyScene.MyModels[ModelNum].RotateZ(-DeltaRotate);
-				MyScene.DrawScene();
+				int k;
+				int flag = 0;
+				node A, B, C, D, E, F;
+				for (int m = 0; m < MyScene.MyModels.size() && flag == 0; m++)
+				{
+					if (m != ModelNum)
+						for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
+							for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
+							{
+								A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+								B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+								C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+
+								float NewAX = MyScene.MyModels[ModelNum].Center.X + (A.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(A.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewAY = MyScene.MyModels[ModelNum].Center.Y + (A.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(A.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180);
+
+								A.X = NewAX;
+								A.Y = NewAY;
+
+								float NewBX = MyScene.MyModels[ModelNum].Center.X + (B.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(B.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewBY = MyScene.MyModels[ModelNum].Center.Y + (B.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(B.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180);
+
+								B.X = NewBX;
+								B.Y = NewBY;
+
+								float NewCX = MyScene.MyModels[ModelNum].Center.X + (C.X - MyScene.MyModels[ModelNum].Center.X) * cos(-DeltaRotate*M_PI / 180) -
+									(C.Y - MyScene.MyModels[ModelNum].Center.Y) * sin(-DeltaRotate*M_PI / 180);
+
+								float NewCY = MyScene.MyModels[ModelNum].Center.Y + (C.X - MyScene.MyModels[ModelNum].Center.X) * sin(-DeltaRotate*M_PI / 180) +
+									(C.Y - MyScene.MyModels[ModelNum].Center.Y) * cos(-DeltaRotate*M_PI / 180);
+
+								C.X = NewCX;
+								C.Y = NewCY;
+
+								D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+								E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+								F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
+
+								k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
+								if (k == 1)
+								{
+									flag = 1;
+									break;
+								}
+							}
+				}
+				if (flag == 0)
+				{
+					MyScene.MyModels[ModelNum].RotateZ(-DeltaRotate);
+					MyScene.DrawScene();
+				}
 			}
 			break;
 		case ID_BClear:
@@ -627,9 +793,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					for (int i = 0; i < MyScene.MyModels[ModelNum].PolygonNum && flag == 0; i++)
 						for (int j = 0; j < MyScene.MyModels[m].PolygonNum && flag == 0; j++)
 						{
-							A = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].A];
-							B = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].B];
-							C = MyScene.MyModels[ModelNum].NewNodes[MyScene.MyModels[ModelNum].Polygons[i].C];
+							A = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].A];
+							B = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].B];
+							C = MyScene.MyModels[ModelNum].Nodes[MyScene.MyModels[ModelNum].Polygons[i].C];
 							A.X *= DeltaCoeff;
 							B.X *= DeltaCoeff;
 							C.X *= DeltaCoeff;
@@ -640,9 +806,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							B.Z *= DeltaCoeff;
 							C.Z *= DeltaCoeff;
 
-							D = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].A];
-							E = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].B];
-							F = MyScene.MyModels[m].NewNodes[MyScene.MyModels[m].Polygons[j].C];
+							D = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].A];
+							E = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].B];
+							F = MyScene.MyModels[m].Nodes[MyScene.MyModels[m].Polygons[j].C];
 
 							k = MyScene.MyModels[ModelNum].PolygonCompare(A, B, C, D, E, F);
 							if (k == 1)
