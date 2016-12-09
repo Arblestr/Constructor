@@ -71,4 +71,8 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #define ID_Zcam 3489
 #define ID_BLight 3490
 
+#define ID_BG 3491
+#define ID_BCross 3492
+
+
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы

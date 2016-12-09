@@ -51,7 +51,7 @@ public:
 
 	void Clear();
 	void DrawScene();
-	void AddModel(Model MyModel);
+	void AddModel(Model MyModel, int type);
 
 	vector<Model> MyModels;
 	Camera* cam;

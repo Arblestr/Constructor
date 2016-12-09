@@ -19,7 +19,7 @@ int ModelNum = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static Scene MyScene(hWnd, 200, 10, 500, 490);
+	static Scene MyScene(hWnd, 195, 10, 500, 490);
 	switch (message)
 	{
 	case WM_CREATE:
@@ -73,10 +73,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Button ButLoad(TEXT("Load"), 780, 460, 25, 80, ID_BLoad);
 		Button ButDel(TEXT("Delete"), 780, 500, 25, 80, ID_BDel);
 
-		Button ButCube(TEXT("Cube"), 200, 505, 25, 80, ID_BCube);
+		Button ButCube(TEXT("Cube"), 195, 505, 25, 80, ID_BCube);
 		Button ButZigZag(TEXT("Zigzag"), 280, 505, 25, 80, ID_BZigZag);
-		Button ButLine(TEXT("line"), 360, 505, 25, 80, ID_BLine);
-		Button Buttblock(TEXT("T-Block"), 440, 505, 25, 80, ID_Btblock);
+		Button ButLine(TEXT("Line"), 365, 505, 25, 80, ID_BLine);
+		Button Buttblock(TEXT("T-Block"), 450, 505, 25, 80, ID_Btblock);
+		Button ButG(TEXT("G-Block"), 535, 505, 25, 80, ID_BG);
+		Button ButCross(TEXT("Cross"), 620, 505, 25, 80, ID_BCross);
 
 		Button ButCamRotateHorL(TEXT("Rotate Left"), 705, 60, 25, 105, ID_BCamRotHorL);
 		Button ButCamRotateHorR(TEXT("Rotate Right"), 820, 60, 25, 105, ID_BCamRotHorR);
@@ -93,7 +95,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Edit EdYcam(TEXT(""), 800, 180, 25, 35, ID_Ycam);
 		SetDlgItemText(hWnd, ID_Ycam, L"0");
 		Edit EdZcam(TEXT(""), 845, 180, 25, 35, ID_Zcam);
-		SetDlgItemText(hWnd, ID_Zcam, L"50");
+		SetDlgItemText(hWnd, ID_Zcam, L"250");
 		Button ButLight(TEXT("OK"), 800, 210, 25, 35, ID_BLight);
 
 	}
@@ -834,8 +836,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		case ID_BCube:
 		{
-			MyModel.LoadFromFile("Cube.txt");
-			MyScene.AddModel(MyModel);
+			MyModel.LoadFromFile("Cube2.txt");
+			MyScene.AddModel(MyModel,1);
 			MyScene.DrawScene();
 			MyModel.ClearModel();
 		}
@@ -843,7 +845,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BZigZag:
 		{
 			MyModel.LoadFromFile("zigzag.txt");
-			MyScene.AddModel(MyModel);
+			MyScene.AddModel(MyModel,2);
 			MyScene.DrawScene();
 			MyModel.ClearModel();
 		}
@@ -851,15 +853,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BLine:
 		{
 			MyModel.LoadFromFile("line.txt");
-			MyScene.AddModel(MyModel);
+			MyScene.AddModel(MyModel,3);
 			MyScene.DrawScene();
 			MyModel.ClearModel();
 		}
 		break;
 		case ID_Btblock:
 		{
-			MyModel.LoadFromFile("tblock.txt");
-			MyScene.AddModel(MyModel);
+			MyModel.LoadFromFile("tblock.txt"); 
+			MyScene.AddModel(MyModel,4);
+			MyScene.DrawScene();
+			MyModel.ClearModel();
+		}
+		break;
+		case ID_BG:
+		{
+			MyModel.LoadFromFile("gblock.txt");
+			MyScene.AddModel(MyModel, 5);
 			MyScene.DrawScene();
 			MyModel.ClearModel();
 		}
@@ -971,6 +981,154 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_BLight:
 		{
 			MyScene.DrawScene();
+		}
+		break;
+
+		case ID_BSave:
+		{
+			FILE *F = fopen("Save.txt", "w");
+			if (!F)
+			{
+				//
+			}
+			else
+			{
+				fprintf_s(F, "%d\n", MyScene.MyModels.size());
+				for (int i = 0; i < MyScene.MyModels.size(); i++)
+				{
+					fprintf_s(F, "%d\n", MyScene.MyModels[i].type);
+					fprintf_s(F, "%f %f %f\n", MyScene.MyModels[i].Center.X,
+						                          MyScene.MyModels[i].Center.Y,
+						                          MyScene.MyModels[i].Center.Z);
+					fprintf_s(F, "%f %f %f\n", MyScene.MyModels[i].Xangle,
+						                          MyScene.MyModels[i].Yangle,
+						                          MyScene.MyModels[i].Zangle);
+				}
+				fclose(F);
+			}		
+		}
+		break;
+
+		case ID_BLoad:
+		{
+			FILE *F = fopen("Save.txt", "r");
+			if (!F)
+			{
+				MessageBox(hWnd,L"No such file found",L"Attention",MB_OK);
+				break;
+			}
+			else
+			{
+				int MyModelsSize = 0;
+				int type;
+				float angX,angY,angZ;
+				float moveX, moveY, moveZ;
+				fscanf_s(F, "%d", &MyModelsSize);
+				for (int i = 0; i < MyModelsSize; i++)
+				{
+					fscanf_s(F, "%d", &type);
+					switch (type)
+					{
+					case 1: 
+					{
+						MyModel.LoadFromFile("Cube2.txt");
+						MyScene.AddModel(MyModel, 1);
+						MyModel.ClearModel();
+
+						fscanf_s(F, "%f %f %f\n", &moveX,&moveY,&moveZ);
+						MyScene.MyModels[i].MoveX(moveX);
+						MyScene.MyModels[i].MoveY(moveY);
+						MyScene.MyModels[i].MoveZ(moveZ);
+
+						fscanf_s(F, "%f %f %f\n", &angX,&angY,&angZ);
+						MyScene.MyModels[i].RotateX(angX);
+						MyScene.MyModels[i].RotateY(angY);
+						MyScene.MyModels[i].RotateZ(angZ);
+						MyScene.DrawScene();
+						
+						break;
+					}
+					case 2:
+					{
+						MyModel.LoadFromFile("zigzag.txt");
+						MyScene.AddModel(MyModel, 2);
+						MyModel.ClearModel();
+
+						fscanf_s(F, "%f %f %f\n", &moveX, &moveY, &moveZ);
+						MyScene.MyModels[i].MoveX(moveX);
+						MyScene.MyModels[i].MoveY(moveY);
+						MyScene.MyModels[i].MoveZ(moveZ);
+
+						fscanf_s(F, "%f %f %f\n", &angX, &angY, &angZ);
+						MyScene.MyModels[i].RotateX(angX);
+						MyScene.MyModels[i].RotateY(angY);
+						MyScene.MyModels[i].RotateZ(angZ);
+						MyScene.DrawScene();
+
+						break;
+					}
+					case 3:
+					{
+						MyModel.LoadFromFile("line.txt");
+						MyScene.AddModel(MyModel, 3);
+						MyModel.ClearModel();
+
+						fscanf_s(F, "%f %f %f\n", &moveX, &moveY, &moveZ);
+						MyScene.MyModels[i].MoveX(moveX);
+						MyScene.MyModels[i].MoveY(moveY);
+						MyScene.MyModels[i].MoveZ(moveZ);
+
+						fscanf_s(F, "%f %f %f\n", &angX, &angY, &angZ);
+						MyScene.MyModels[i].RotateX(angX);
+						MyScene.MyModels[i].RotateY(angY);
+						MyScene.MyModels[i].RotateZ(angZ);
+						MyScene.DrawScene();
+
+						break;
+					}
+					case 4:
+					{
+						MyModel.LoadFromFile("tblock.txt");
+						MyScene.AddModel(MyModel, 4);
+						MyModel.ClearModel();
+
+						fscanf_s(F, "%f %f %f\n", &moveX, &moveY, &moveZ);
+						MyScene.MyModels[i].MoveX(moveX);
+						MyScene.MyModels[i].MoveY(moveY);
+						MyScene.MyModels[i].MoveZ(moveZ);
+
+						fscanf_s(F, "%f %f %f\n", &angX, &angY, &angZ);
+						MyScene.MyModels[i].RotateX(angX);
+						MyScene.MyModels[i].RotateY(angY);
+						MyScene.MyModels[i].RotateZ(angZ);
+						MyScene.DrawScene();
+						
+						break;
+					}
+					case 5:
+					{
+						MyModel.LoadFromFile("gblock.txt");
+						MyScene.AddModel(MyModel, 5);
+						MyModel.ClearModel();
+
+						fscanf_s(F, "%f %f %f\n", &moveX, &moveY, &moveZ);
+						MyScene.MyModels[i].MoveX(moveX);
+						MyScene.MyModels[i].MoveY(moveY);
+						MyScene.MyModels[i].MoveZ(moveZ);
+
+						fscanf_s(F, "%f %f %f\n", &angX, &angY, &angZ);
+						MyScene.MyModels[i].RotateX(angX);
+						MyScene.MyModels[i].RotateY(angY);
+						MyScene.MyModels[i].RotateZ(angZ);
+						MyScene.DrawScene();
+
+						break;
+					}
+					}
+					
+				}
+				fclose(F);
+			}
 		}
 		break;
 

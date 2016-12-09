@@ -32,9 +32,14 @@ public:
 	~Model();
 	int NodesNum;
 	node Center;
+	node NewCenter;
 	COLORREF Color;
 	float coeff;
 	int PolygonNum;
+	int type;
+	float Xangle = 0;
+	float Yangle = 0;
+	float Zangle = 0;
 
 	vector<node> Nodes;
 	vector<node> NewNodes;

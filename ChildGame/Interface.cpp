@@ -168,19 +168,21 @@ void Scene::DrawScene()
 	{
 		this->zbuffer[i] = -9999999;
 	}
-	sunny(this->camPointOfLight, this->zbuffer, this->pixels, this->width, this->height);
+	//sunny(this->camPointOfLight, this->zbuffer, this->pixels, this->width, this->height);
 	for (int i = 0; i < MyModels.size(); i++)
 	{
 		this->MyModels[i].PaintModel(this->pixels, this->width, this->height, this->zbuffer, this->camPointOfLight);
+		//this->MyModels[i].PaintSkeleton(this->pixels);
 	}
 
 	SelectObject(this->hdcMem, this->sBmp);
 	BitBlt(this->hdc, X, Y, this->width, this->height, this->hdcMem, 0, 0, SRCCOPY);
 }
 
-void Scene::AddModel(Model MyModel)
+void Scene::AddModel(Model MyModel, int type)
 {
 	//#pragma omp parallel for
+	MyModel.type = type;
 	for (int vertexIndex = 0; vertexIndex < MyModel.NodesNum; vertexIndex++)
 	{
 		node v;
@@ -240,6 +242,19 @@ void Scene::toCam()
 			MyModel->NewNodes[vertexIndex].Y = result[1] + yCenter;
 			MyModel->NewNodes[vertexIndex].Z = result[2];
 		}
+
+		Cvector NodVec(MyModel->Center.X, MyModel->Center.Y, MyModel->Center.Z, 1);
+		Cvector result;
+		for (int i = 0; i <= 3; i++)
+		{
+			for (int j = 0; j <= 3; j++)
+			{
+				result[i] = result[i] + view[j][i] * NodVec[j];
+			}
+		}
+		MyModel->NewCenter.X = result[0] ;
+		MyModel->NewCenter.Y = result[1] ;
+		MyModel->NewCenter.Z = result[2];
 
 		Cmatrix nview = view;
 		nview.transposition();

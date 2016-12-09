@@ -249,6 +249,7 @@ void Model::ReadNodes()
 		this->sNormals.push_back(BufNormal);
 	}
 	fscanf_s(this->F, "%f %f %f", &(this->Center.X), &(this->Center.Y), &(this->Center.Z));
+	this->NewCenter = this->Center;
 
 }
 
@@ -313,6 +314,7 @@ void Model::MoveZ(float DeltaMove)
 
 void Model::RotateX(float DeltaRotate)
 {
+	this->Xangle += DeltaRotate;
 	this->rotate = matrixrotationX(DeltaRotate*M_PI / 180);
 	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
@@ -336,6 +338,7 @@ void Model::RotateX(float DeltaRotate)
 
 void Model::RotateY(float DeltaRotate)
 {
+	this->Yangle += DeltaRotate;
 	this->rotate = matrixrotationY(DeltaRotate*M_PI / 180);
 	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
@@ -358,6 +361,7 @@ void Model::RotateY(float DeltaRotate)
 
 void Model::RotateZ(float DeltaRotate)
 {
+	this->Zangle += DeltaRotate;
 	this->rotate = matrixrotationZ(DeltaRotate*M_PI / 180);
 	this->initModification(&Center);
 	for (int i = 0; i < this->NodesNum; i++)
@@ -383,8 +387,8 @@ void Model::initModification(node* Center)
 	//this->Center.X = Center->X;
 	//this->Center.Y = Center->Y;
 	//this->Center.Z = Center->Z;
-	Cmatrix moveToOrigin = matrixMove(-this->Center.X, -this->Center.Y, -this->Center.Z);
-	Cmatrix moveBack = matrixMove(this->Center.X, this->Center.Y, this->Center.Z);
+	Cmatrix moveToOrigin = matrixMove(-this->NewCenter.X, -this->NewCenter.Y, -this->NewCenter.Z);
+	Cmatrix moveBack = matrixMove(this->NewCenter.X, this->NewCenter.Y, this->NewCenter.Z);
 
 	this->nMatrixRotation = moveToOrigin * rotate * moveBack;
 	this->nMatrixRotation.transposition();
